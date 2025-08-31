@@ -82,7 +82,7 @@ const KeyboardChordDiagram: React.FC<KeyboardChordDiagramProps> = ({ diagram }) 
 
         return (
           <div
-            key={highlightedKeyName}}
+            key={highlightedKeyName}
             className="absolute rounded-full flex items-center justify-center text-white font-bold"
             style={{
               left: key.x + (key.isBlack ? blackKeyWidth / 2 : whiteKeyWidth / 2) - 7.5, // Center dot
