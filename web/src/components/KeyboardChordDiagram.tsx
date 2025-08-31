@@ -12,7 +12,7 @@ interface KeyboardChordDiagramProps {
 
 const KeyboardChordDiagram: React.FC<KeyboardChordDiagramProps> = ({ diagram }) => {
   const whiteKeysInOctave = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-  const blackKeyOffsets = { 'C#': 0.6, 'D#': 1.4, 'F#': 3.6, 'G#': 4.4, 'A#': 5.2 }; // Relative to white key width
+  const blackKeyOffsets: { [key: string]: number } = { 'C#': 0.6, 'D#': 1.4, 'F#': 3.6, 'G#': 4.4, 'A#': 5.2 }; // Relative to white key width
 
   const numOctaves = 2; // Display 2 octaves for simplicity
   const whiteKeyWidth = 15; 
@@ -48,7 +48,7 @@ const KeyboardChordDiagram: React.FC<KeyboardChordDiagramProps> = ({ diagram }) 
   return (
     <div className="relative overflow-hidden" style={{ width: totalWidth, height: totalHeight }}>
       {/* Render White Keys */}
-      {allKeys.filter(key => !key.isBlack).map((key, index) => (
+      {allKeys.filter(key => !key.isBlack).map((key) => (
         <div
           key={`white-${key.name}-${key.octave}`}
           className="absolute border border-[var(--color-border)] bg-[var(--color-background)]"
@@ -62,7 +62,7 @@ const KeyboardChordDiagram: React.FC<KeyboardChordDiagramProps> = ({ diagram }) 
       ))}
 
       {/* Render Black Keys */}
-      {allKeys.filter(key => key.isBlack).map((key, index) => (
+      {allKeys.filter(key => key.isBlack).map((key) => (
         <div
           key={`black-${key.name}-${key.octave}`}
           className="absolute bg-black border border-[var(--color-border)]"
@@ -76,13 +76,13 @@ const KeyboardChordDiagram: React.FC<KeyboardChordDiagramProps> = ({ diagram }) 
       ))}
 
       {/* Render Highlighted Keys */}
-      {diagram.keys.map((highlightedKeyName, index) => {
+      {diagram.keys.map((highlightedKeyName) => {
         const key = allKeys.find(k => k.name === highlightedKeyName.slice(0, -1) && k.octave === parseInt(highlightedKeyName.slice(-1)) - 3); // Assuming startOctave 3 for diagram data
         if (!key) return null;
 
         return (
           <div
-            key={`highlight-${index}`}
+            key={highlightedKeyName}}
             className="absolute rounded-full flex items-center justify-center text-white font-bold"
             style={{
               left: key.x + (key.isBlack ? blackKeyWidth / 2 : whiteKeyWidth / 2) - 7.5, // Center dot

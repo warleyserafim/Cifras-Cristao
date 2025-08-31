@@ -26,7 +26,7 @@ const GuitarChordDiagram: React.FC<GuitarChordDiagramProps> = ({ diagram }) => {
   let startFret = 0;
   if (diagram.frets.some(f => f !== null && f > numFrets)) {
     // If any fret is beyond the initial 5, find the minimum non-zero fret
-    const minFret = Math.min(...diagram.frets.filter(f => f !== null && f > 0) as number[]);
+    const minFret = Math.min(...diagram.frets.filter((f): f is number => f !== null && f > 0));
     if (minFret > 1) {
       startFret = minFret - 1; // Start one fret before the lowest used fret
     }
@@ -39,7 +39,7 @@ const GuitarChordDiagram: React.FC<GuitarChordDiagramProps> = ({ diagram }) => {
         <line x1="0" y1="0" x2={diagramWidth} y2="0" stroke="currentColor" strokeWidth="4" />
       )}
       {startFret > 0 && (
-        <text x="-5" y="15" fill="currentColor" fontSize="10" textAnchor="end">{startFret}</text>
+        <text x="-5" y="15" fill="currentColor" fontSize="10px" textAnchor="end">{startFret}</text>
       )}
 
       {/* Frets */}
@@ -137,7 +137,7 @@ const GuitarChordDiagram: React.FC<GuitarChordDiagramProps> = ({ diagram }) => {
             x={stringIndex * stringSpacing} 
             y={nutHeight + (displayFret * fretWidth) - (fretWidth / 2) + 5} // Center text vertically
             fill="white" 
-            fontSize="10" 
+            fontSize="10px" 
             textAnchor="middle"
             dominantBaseline="middle"
           >

@@ -1,8 +1,8 @@
 // web/src/utils/chordDiagrams.ts
 
 interface GuitarDiagram {
-  frets: number[]; // Array of fret numbers for each string (EADGBe from low to high)
-  fingers: number[]; // Array of finger numbers for each string (1=index, 2=middle, etc.)
+  frets: (number | null)[]; // Array of fret numbers for each string (EADGBe from low to high)
+  fingers: (number | null)[]; // Array of finger numbers for each string (1=index, 2=middle, etc.)
   barre?: { fret: number; from: number; to: number }; // Optional barre chord
   capo?: number; // Optional capo position
 }
