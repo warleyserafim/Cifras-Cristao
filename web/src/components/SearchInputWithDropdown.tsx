@@ -95,7 +95,7 @@ const SearchInputWithDropdown: React.FC<SearchInputWithDropdownProps> = ({ initi
         onChange={handleSearchChange}
         onFocus={() => setShowDropdown(true)}
       />
-      {showDropdown && searchQuery && (musicResults.length > 0 || loading) ? (
+      {showDropdown && searchQuery && (musicResults.length > 0 || loading) && (
         <div
           id="search-dropdown"
           className="absolute z-10 w-full bg-[var(--color-card-background)] border border-[var(--color-border)] rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto text-left"
@@ -117,15 +117,8 @@ const SearchInputWithDropdown: React.FC<SearchInputWithDropdownProps> = ({ initi
               </Link>
             ))
           ) : (
-            <div className="p-3 text-[var(--color-text-secondary)]">Nenhuma música encontrada para "{searchQuery}".</div>
+            <div className="p-3 text-[var(--color-text-secondary)]">Nenhuma música encontrada para &quot;{searchQuery}&quot;.</div>
           )}
-        </div>
-      ) : showDropdown && searchQuery && musicResults.length === 0 && !loading && (
-        <div
-          id="search-dropdown"
-          className="absolute z-10 w-full bg-[var(--color-card-background)] border border-[var(--color-border)] rounded-lg shadow-lg mt-1 p-3 text-left text-[var(--color-text-secondary)]"
-        >
-          Nenhuma música encontrada para "{searchQuery}".
         </div>
       )}
     </div>
