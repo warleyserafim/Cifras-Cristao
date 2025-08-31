@@ -58,7 +58,7 @@ const transposeContent = (content: string, semitones: number): string => {
 
   return content.replace(/<b>(.*?)<\/b>/g, (match, chord) => {
     const transposedChord = transposeChord(chord, semitones);
-    return `<b>${transposedChord}<>`;
+    return `<b>${transposedChord}</b>`;
   });
 };
 
