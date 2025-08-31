@@ -5,6 +5,7 @@ import AuthButton from "@/components/AuthButton";
 import Image from "next/image";
 import { Suspense } from 'react';
 import ProgressBar from "@/components/ProgressBar";
+import Link from "next/link";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -39,10 +40,10 @@ export default function RootLayout({
         </Suspense>
         <header className="bg-[var(--color-card-background)] p-4 shadow-md">
           <nav className="container mx-auto flex justify-between items-center">
-            <a href="/" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
               <Image src="/assets/logo.png" alt="Cifras Cristao Logo" width={40} height={40} />
               <span className="text-2xl font-bold text-[var(--color-text-primary)]">Cifras Cristao</span>
-            </a>
+            </Link>
             <div>
                             <AuthButton />
             </div>

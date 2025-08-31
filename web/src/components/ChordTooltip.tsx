@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { getChordDiagram } from '@/utils/chordDiagrams';
 import GuitarChordDiagram from './GuitarChordDiagram';
 import KeyboardChordDiagram from './KeyboardChordDiagram';
+import { GuitarDiagram, KeyboardDiagram } from '@/utils/chordDiagrams';
 
 interface ChordTooltipProps {
   chordName: string;
@@ -46,9 +47,9 @@ export default function ChordTooltip({ chordName, position, onClose }: ChordTool
       <div className="min-h-[100px] flex items-center justify-center bg-[var(--color-background)] rounded-md p-1">
         {chordData ? (
           diagramType === 'guitar' ? (
-            <GuitarChordDiagram diagram={chordData as any} />
+            <GuitarChordDiagram diagram={chordData as GuitarDiagram} />
           ) : (
-            <KeyboardChordDiagram diagram={chordData as any} />
+            <KeyboardChordDiagram diagram={chordData as KeyboardDiagram} />
           )
         ) : (
           <p className="text-[var(--color-text-secondary)] text-center text-[10px]">Diagrama não disponível.</p>
