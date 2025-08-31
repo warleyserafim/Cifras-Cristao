@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id              String    @id @default(uuid())
+  email           String    @unique
+  name            String?
+  password        String
+  role            Role      @default(USER)
+  profilePhotoUrl String?   // New field
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  favorites       Music[]   @relation("UserFavorites")
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  artists   Artist[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Artist {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  photoUrl  String?
+  category  Category? @relation(fields: [categoryId], references: [id])
+  categoryId String?
+  musics    Music[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Music {
+  id          String    @id @default(uuid())
+  title       String
+  tone        String
+  content     String    @default("")
+  videoUrl    String?
+  artist      Artist    @relation(fields: [artistId], references: [id])
+  artistId    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  favoritedBy User[]    @relation("UserFavorites")
+  tags        MusicTag[]
+}
+
+model Tag {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  musics    MusicTag[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model MusicTag {
+  music     Music @relation(fields: [musicId], references: [id])
+  musicId   String
+  tag       Tag   @relation(fields: [tagId], references: [id])
+  tagId     String
+  assignedAt DateTime @default(now())
+
+  @@id([musicId, tagId])
+}
