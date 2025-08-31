@@ -107,7 +107,7 @@ const SearchInputWithDropdown: React.FC<SearchInputWithDropdownProps> = ({ initi
               <Link key={music.id} href={`/music/${music.id}`}>
                 <div className="flex items-center p-3 hover:bg-[var(--color-primary-light)] cursor-pointer">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3 text-[var(--color-text-secondary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinecap="round" strokeWidth={2} d="M9 19V6l12-3v13m-6 0V9" />
+                    <path strokeLinecap="round" strokeWidth={2} d="M9 19V6l12-3v13m-6 0V9" />
                   </svg>
                   <div>
                     <div className="font-semibold text-[var(--color-text-primary)]">{music.title}</div>
