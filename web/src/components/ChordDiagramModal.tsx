@@ -1,7 +1,5 @@
-'use client';
-
 import { useState } from 'react';
-import { getChordDiagram } from '@/utils/chordDiagrams';
+import { getChordDiagram, GuitarDiagram, KeyboardDiagram } from '@/utils/chordDiagrams';
 import GuitarChordDiagram from './GuitarChordDiagram';
 import KeyboardChordDiagram from './KeyboardChordDiagram';
 
@@ -45,9 +43,9 @@ export default function ChordDiagramModal({ chordName, diagramType: initialDiagr
         <div className="min-h-[200px] flex items-center justify-center bg-[var(--color-background)] rounded-md p-4">
           {chordData ? (
             currentDiagramType === 'guitar' ? (
-              <GuitarChordDiagram diagram={chordData as any} />
+              <GuitarChordDiagram diagram={chordData as GuitarDiagram} />
             ) : (
-              <KeyboardChordDiagram diagram={chordData as any} />
+              <KeyboardChordDiagram diagram={chordData as KeyboardDiagram} />
             )
           ) : (
             <p className="text-[var(--color-text-secondary)] text-center p-4">Diagrama não disponível para **{chordName}** em {currentDiagramType === 'guitar' ? 'violão' : 'teclado'}.</p>
