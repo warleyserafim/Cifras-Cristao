@@ -24,26 +24,34 @@ const KeyboardChordDiagram: React.FC<KeyboardChordDiagramProps> = ({ diagram }) 
   const totalHeight = whiteKeyHeight;
 
   // Generate all keys in the displayed range
-  const allKeys = [];
-  for (let octave = 0; octave < numOctaves; octave++) {
-    for (let i = 0; i < whiteKeysInOctave.length; i++) {
-      const whiteKeyName = whiteKeysInOctave[i];
+ interface KeyInfo {
+    name: string;
+    octave: number;
+    x: number;
+    isBlack: boolean;
+  }
+
+const allKeys: KeyInfo[] = [];
+
+for (let octave = 0; octave < numOctaves; octave++) {
+  for (let i = 0; i < whiteKeysInOctave.length; i++) {
+    const whiteKeyName = whiteKeysInOctave[i];
+    allKeys.push({ 
+      name: whiteKeyName, 
+      octave: octave, 
+      x: octave * whiteKeysInOctave.length * whiteKeyWidth + i * whiteKeyWidth, 
+      isBlack: false 
+    });
+    if (blackKeyOffsets[whiteKeyName + '#']) {
       allKeys.push({ 
-        name: whiteKeyName, 
+        name: whiteKeyName + '#', 
         octave: octave, 
-        x: octave * whiteKeysInOctave.length * whiteKeyWidth + i * whiteKeyWidth, 
-        isBlack: false 
+        x: octave * whiteKeysInOctave.length * whiteKeyWidth + i * whiteKeyWidth + (whiteKeyWidth * blackKeyOffsets[whiteKeyName + '#']), 
+        isBlack: true 
       });
-      if (blackKeyOffsets[whiteKeyName + '#']) {
-        allKeys.push({ 
-          name: whiteKeyName + '#', 
-          octave: octave, 
-          x: octave * whiteKeysInOctave.length * whiteKeyWidth + i * whiteKeyWidth + (whiteKeyWidth * blackKeyOffsets[whiteKeyName + '#']), 
-          isBlack: true 
-        });
-      }
     }
   }
+}
 
   return (
     <div className="relative overflow-hidden" style={{ width: totalWidth, height: totalHeight }}>
