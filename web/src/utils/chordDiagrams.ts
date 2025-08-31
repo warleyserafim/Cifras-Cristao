@@ -1,17 +1,17 @@
 // web/src/utils/chordDiagrams.ts
 
-interface GuitarDiagram {
+export interface GuitarDiagram {
   frets: (number | null)[]; // Array of fret numbers for each string (EADGBe from low to high)
   fingers: (number | null)[]; // Array of finger numbers for each string (1=index, 2=middle, etc.)
   barre?: { fret: number; from: number; to: number }; // Optional barre chord
   capo?: number; // Optional capo position
 }
 
-interface KeyboardDiagram {
+export interface KeyboardDiagram {
   keys: string[]; // Array of key names (e.g., 'C4', 'E4', 'G4')
 }
 
-interface ChordDiagrams {
+export interface ChordDiagrams {
   guitar?: GuitarDiagram;
   keyboard?: KeyboardDiagram;
 }
