@@ -66,7 +66,7 @@ export const removeFavoriteMusic = (userId: string, musicId: string, token: stri
 export const getFavoriteMusic = (userId: string, token: string) => api.get(`/users/${userId}/favorites`, getAuthHeaders(token)); // New
 
 // Auth Endpoints
-export const login = (credentials: any) => api.post('/auth/login', credentials);
-export const register = (userData: any) => api.post('/auth/register', userData);
+export const login = (credentials: Record<string, unknown>) => api.post('/auth/login', credentials);
+export const register = (userData: Record<string, unknown>) => api.post('/auth/register', userData);
 
 export default api;
