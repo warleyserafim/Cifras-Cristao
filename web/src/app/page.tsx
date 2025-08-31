@@ -1,6 +1,6 @@
 'use client'; // Make it a client component
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getArtists } from '@/services/api';
 import Link from 'next/link';
@@ -45,8 +45,7 @@ const ArtistCard = ({ artist }: { artist: Artist }) => {
   );
 };
 
-
-export default function Home() {
+const HomeContent = () => {
   const [artists, setArtists] = useState<Artist[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -99,5 +98,13 @@ export default function Home() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }
