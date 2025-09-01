@@ -1,66 +1,42 @@
-# Free Deployment Instructions
+## Deploying the API to Render using Docker
 
-This guide provides instructions for deploying your Cifras Club Clone application for free using popular platforms.
+This guide assumes you have a Render account and your project is connected to a Git repository (e.g., GitHub, GitLab).
 
-## 1. Frontend Deployment (Next.js - `web` directory)
+1.  **Commit and Push Changes:**
+    First, commit the newly created `Dockerfile` and any other changes to your Git repository:
+    ```bash
+    git add api/Dockerfile
+    git commit -m "Add Dockerfile for API deployment on Render"
+    git push
+    ```
 
-We recommend using **Vercel** for the Next.js frontend due to its seamless integration and generous free tier.
+2.  **Create a New Web Service on Render:**
+    *   Go to your Render dashboard.
+    *   Click on "New Web Service".
+    *   Select your Git repository.
 
-**Steps:**
+3.  **Configure the Web Service:**
+    *   **Root Directory:** Set this to `api/` (or the directory where your `Dockerfile` is located relative to your repository root).
+    *   **Runtime:** Select "Docker".
+    *   **Build Command:** Leave empty (Docker will handle the build process based on the `Dockerfile`).
+    *   **Start Command:** Leave empty (the `CMD` instruction in your `Dockerfile` will handle this).
+    *   **Name:** Give your service a name (e.g., `cifras-club-api`).
+    *   **Region:** Choose a region close to your users.
+    *   **Branch:** Select the branch you want to deploy from (e.g., `main` or `master`).
+    *   **Instance Type:** Choose an instance type based on your expected traffic and resource needs.
+    *   **Environment Variables (Optional but Recommended):** If your API needs any environment variables (e.g., database connection strings, API keys), add them here. For example, if you have a `.env` file locally, you'll need to add those variables to Render.
 
-1.  **Create a Vercel Account:** If you don't have one, sign up at [vercel.com](https://vercel.com/). You can sign up with your GitHub account for easy integration.
-2.  **Import Your Project:**
-    *   Go to your Vercel Dashboard.
-    *   Click "Add New..." -> "Project".
-    *   Select your Git provider (e.g., GitHub) and connect the repository containing your `cifras-club-clone` project.
-3.  **Configure Project:**
-    *   When importing, Vercel will automatically detect your Next.js project.
-    *   For the "Root Directory", make sure it points to the `web` folder within your repository (e.g., if your repo is `cifras-club-clone`, set the root directory to `web`).
-    *   **Environment Variables:** You will need to set the `NEXT_PUBLIC_API_URL` environment variable. This should point to the URL of your deployed backend API (which you will get after deploying your backend).
-        *   Go to "Settings" -> "Environment Variables" for your project in Vercel.
-        *   Add a new variable:
-            *   Name: `NEXT_PUBLIC_API_URL`
-            *   Value: `YOUR_DEPLOYED_BACKEND_API_URL` (e.g., `https://your-api-name.onrender.com/api`)
-4.  **Deploy:** Click "Deploy". Vercel will build and deploy your frontend application.
+4.  **Deploy:**
+    *   Click "Create Web Service".
 
-## 2. Backend Deployment (Node.js API with Prisma - `api` directory)
+Render will now pull your repository, detect the `Dockerfile` in the specified root directory, build the Docker image, and deploy your API service.
 
-We recommend using **Render** for the Node.js API and PostgreSQL database, as it offers both services within its free tier.
+**Important Considerations:**
 
-**Steps:**
+*   **Database:** Ensure your database (e.g., PostgreSQL, MongoDB) is also accessible from Render. If it's a local database, you'll need to migrate it or set up a cloud-hosted database.
+*   **Environment Variables:** Double-check that all necessary environment variables are configured in Render.
+*   **Port:** The `Dockerfile` exposes port 3000. Make sure your Node.js application is configured to listen on `process.env.PORT` (which Render sets) or specifically on port 3000 if you hardcode it.
+*   **`yt-dlp` and `ffmpeg` updates:** Keep an eye on updates for `yt-dlp` and `ffmpeg`. You might need to update the `Dockerfile` periodically to get the latest versions.
+*   **`librosa` dependencies:** The `chord_recognizer.py` script uses `librosa`. Ensure that `librosa` and its Python dependencies are installed within the Docker image. You might need to add `RUN pip3 install librosa` to your Dockerfile if it's not already handled by `yt-dlp`'s dependencies or if `librosa` has specific system-level dependencies.
 
-1.  **Create a Render Account:** If you don't have one, sign up at [render.com](https://render.com/). You can sign up with your GitHub account.
-2.  **Create a PostgreSQL Database:**
-    *   Go to your Render Dashboard.
-    *   Click "New" -> "PostgreSQL".
-    *   Choose a name for your database and select a region.
-    *   Click "Create Database". Render will provide you with a `DATABASE_URL`. Copy this URL.
-3.  **Create a Web Service for Your API:**
-    *   Go to your Render Dashboard.
-    *   Click "New" -> "Web Service".
-    *   Connect your GitHub repository containing your `cifras-club-clone` project.
-    *   For the "Root Directory", make sure it points to the `api` folder within your repository (e.g., `api`).
-    *   **Environment:** Node.js
-    *   **Build Command:**
-        ```bash
-        npm install && npx prisma migrate deploy
-        ```
-        *This command installs dependencies and applies your Prisma database migrations.*
-    *   **Start Command:**
-        ```bash
-        npm start
-        ```
-    *   **Environment Variables:**
-        *   Add the `DATABASE_URL` you copied from your Render PostgreSQL database.
-        *   Add any other environment variables your API needs (e.g., `JWT_SECRET`, `PORT` - Render usually sets `PORT` automatically, but you can specify it if your app expects a specific one).
-            *   Name: `JWT_SECRET`
-            *   Value: `A_STRONG_RANDOM_SECRET_STRING` (Generate a long, random string)
-    *   **Connect to Database:** In the "Environment" section of your Web Service settings, ensure the `DATABASE_URL` is correctly linked to your PostgreSQL database.
-4.  **Deploy:** Click "Create Web Service". Render will build and deploy your API.
-
-## Important Notes:
-
-*   **Environment Variables:** Always use environment variables for sensitive information (database URLs, API keys, secrets). Never hardcode them in your code.
-*   **Prisma Migrations:** The `npx prisma migrate deploy` command is crucial for applying your database schema changes to the deployed database. Ensure it runs successfully during your backend's build process.
-*   **Free Tier Limits:** Be aware of the free tier limitations of Vercel and Render (e.g., build minutes, bandwidth, database size, idle time). For small projects, these tiers are usually sufficient.
-*   **API URL Update:** Once your backend API is deployed on Render, copy its URL and update the `NEXT_PUBLIC_API_URL` environment variable in your Vercel frontend project. Then, redeploy your frontend on Vercel for the changes to take effect.
+Let me know if you have any questions or if you'd like me to help with any other part of the deployment process!
