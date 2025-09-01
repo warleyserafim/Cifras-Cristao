@@ -24,7 +24,7 @@ export const analyzeMusic = async (youtubeUrl: string) => {
     // 0. Get video metadata using yt-dlp
     console.log(`Getting metadata for ${youtubeUrl}...`);
     const { stdout: metaStdout, stderr: metaStderr } = await execPromise(
-      `yt-dlp --print-json "${youtubeUrl}"`,
+      `yt-dlp --print-json --cookies-from-browser <YOUR_BROWSER_HERE> "${youtubeUrl}"`,
       { maxBuffer: 1024 * 1024 * 10 } // Increase buffer to 10MB
     );
     if (metaStderr) console.error('yt-dlp metadata stderr:', metaStderr);
@@ -48,7 +48,7 @@ export const analyzeMusic = async (youtubeUrl: string) => {
     // 1. Download audio using yt-dlp
     console.log(`Downloading audio from ${youtubeUrl} to ${audioFilePath}...`);
     const { stdout: downloadStdout, stderr: downloadStderr } = await execPromise(
-      `yt-dlp -x --audio-format wav -o "${audioFileOutputPath}" "${youtubeUrl}"`,
+      `yt-dlp -x --audio-format wav --cookies-from-browser <YOUR_BROWSER_HERE> -o "${audioFileOutputPath}" "${youtubeUrl}"`,
       { maxBuffer: 1024 * 1024 * 50 } // Increase buffer to 50MB for audio download output
     );
     console.log('yt-dlp stdout:', downloadStdout);
