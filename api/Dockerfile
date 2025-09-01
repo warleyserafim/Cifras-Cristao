@@ -39,7 +39,7 @@ COPY . .
 RUN npm run build
 
 # Copiar o script Python para dentro de dist/utils (onde o código TS espera encontrar)
-RUN mkdir -p dist/utils && cp utils/chord_recognizer.py dist/utils/
+RUN mkdir -p dist/utils && cp src/utils/chord_recognizer.py dist/utils/
 
 # Porta exposta
 EXPOSE 3000
