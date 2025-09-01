@@ -52,7 +52,7 @@ const ChordTimeline = ({ chords, currentTime }: { chords: ChordData[]; currentTi
         {chords.map((chord, i) => {
           const diagramData = CHORD_DIAGRAMS[chord.chord]?.guitar;
           return (
-            <div key={i} ref={el => chordRefs.current[i] = el} className="flex-shrink-0 w-32 h-40">
+            <div key={i} ref={(el) => { chordRefs.current[i] = el; }} className="flex-shrink-0 w-32 h-40">
               <div className={`w-full h-full p-2 border-2 rounded-lg transition-all duration-200 text-center ${i === activeChordIndex ? 'bg-orange-500 border-orange-400 scale-105' : 'bg-gray-700 border-gray-600'}`}>
                 <span className="text-lg font-bold">{chord.chord}</span>
                 {diagramData ? (
