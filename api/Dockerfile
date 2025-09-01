@@ -1,10 +1,13 @@
-# Use uma imagem Node.js mais completa (baseada em Debian)
-FROM node:20-bullseye
+# Use uma imagem Node.js mais completa (baseada em Debian Bookworm, que inclui Python 3.11+)
+FROM node:20-bookworm
 
 # Diretório de trabalho
 WORKDIR /app
 
 # Instalar dependências do sistema (Python + FFmpeg + bibliotecas para librosa)
+# Nota: Python 3.11+ já está disponível no Bookworm.
+# O erro "Sign in to confirm you’re not a bot" do yt-dlp é um problema de tempo de execução
+# que requer cookies de autenticação, não um problema de build do Dockerfile.
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
@@ -15,6 +18,7 @@ RUN apt-get update && apt-get install -y \
     gfortran \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
+
 
 # Instalar yt-dlp e librosa via pip
 RUN pip3 install --no-cache-dir yt-dlp librosa
