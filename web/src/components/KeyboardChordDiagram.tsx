@@ -15,7 +15,7 @@ const KeyboardChordDiagram: React.FC<KeyboardChordDiagramProps> = ({ diagram }) 
   const blackKeyOffsets: { [key: string]: number } = { 'C#': 0.6, 'D#': 1.4, 'F#': 3.6, 'G#': 4.4, 'A#': 5.2 }; // Relative to white key width
 
   const numOctaves = 2; // Display 2 octaves for simplicity
-  const whiteKeyWidth = 15; 
+  const whiteKeyWidth = 9; 
   const whiteKeyHeight = 60;
   const blackKeyWidth = whiteKeyWidth * 0.6;
   const blackKeyHeight = whiteKeyHeight * 0.6;

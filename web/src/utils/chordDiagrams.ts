@@ -49,6 +49,16 @@ export const CHORD_DIAGRAMS: { [key: string]: ChordDiagrams } = {
     guitar: { frets: [0, 2, 2, 1, 0, 0], fingers: [0, 2, 3, 1, 0, 0] },
     keyboard: { keys: ['E4', 'G#4', 'B4'] },
   },
+  // Dm (D minor)
+  'Dm': {
+    guitar: { frets: [null, null, 0, 2, 3, 1], fingers: [null, null, 0, 2, 3, 1] },
+    keyboard: { keys: ['D4', 'F4', 'A4'] },
+  },
+  // E7 (E dominant 7th)
+  'E7': {
+    guitar: { frets: [0, 2, 0, 1, 0, 0], fingers: [0, 2, 0, 1, 0, 0] },
+    keyboard: { keys: ['E4', 'G#4', 'B4', 'D5'] }, // Added D5 for 7th
+  },
   // C# Major (example for transposed chord)
   'C#': {
     guitar: { frets: [null, 4, 3, 1, 2, 1], fingers: [null, 3, 2, 1, 4, 1], barre: { fret: 1, from: 1, to: 6 } }, // F shape capo 1

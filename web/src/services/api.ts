@@ -76,4 +76,7 @@ export const deleteComment = (commentId: string, token: string) => api.delete(`/
 export const login = (credentials: Record<string, unknown>) => api.post('/auth/login', credentials);
 export const register = (userData: Record<string, unknown>) => api.post('/auth/register', userData);
 
+// Analysis Endpoints
+export const analyzeMusic = (youtubeUrl: string) => api.post('/analyze/analyze-music', { youtubeUrl });
+
 export default api;

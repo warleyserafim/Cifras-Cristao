@@ -230,7 +230,7 @@ export default function MusicPage() {
 
   const handleChordHover = (chord: string, rect: DOMRect) => {
     setHoveredChord(chord);
-    setTooltipPosition({ x: rect.left + window.scrollX, y: rect.top + window.scrollY });
+    setTooltipPosition({ x: rect.left, y: rect.top });
   };
 
   const handleChordLeave = () => {

@@ -45,7 +45,8 @@ export default function RootLayout({
               <span className="text-2xl font-bold text-[var(--color-text-primary)]">Cifras Cristao</span>
             </Link>
             <div>
-                            <AuthButton />
+              <Link href="/analyze" className="btn btn-secondary mr-2">Analyze Music</Link>
+              <AuthButton />
             </div>
           </nav>
         </header>

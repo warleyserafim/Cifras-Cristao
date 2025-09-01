@@ -1,1 +1,45 @@
-"Crie um layout moderno e responsivo inspirado no site Cifras Club. O design deve seguir as seguintes diretrizes:Topo (Header):Barra superior com logotipo no canto esquerdo.Campo de busca centralizado, em destaque, com ícone de lupa.Menu de navegação no canto direito com itens: 'Cifras', 'Videoaulas', 'Artistas', 'Favoritos' e 'Comunidade'.Ícone de usuário e botão de login/cadastro no canto superior direito.Página inicial (Home):Seção de destaques com músicas populares em cards grandes, incluindo título, artista, tom e botão de acessar.Lista de músicas recentes em formato de tabela/lista, com opção de filtrar por gênero, popularidade e tom.Banner lateral para anúncios (como no Cifras Club).Página da música:Exibir título, artista, tonalidade e campo de transposição de tom.Exibir cifras com acorde acima da sílaba da palavra, em fonte legível e fundo claro.Botão de 'Favoritar', 'Compartilhar' e 'Ajustar Tom'.Seção de comentários no final da página.Seção de vídeo-aula integrada (se houver).Rodapé (Footer):Links para 'Sobre', 'Contato', 'Política de Privacidade' e redes sociais.Identidade visual:Paleta de cores semelhante ao Cifras Club: fundo claro (branco ou cinza muito claro), elementos em laranja (#f58634), preto e cinza escuro.Fontes modernas, destaque para títulos e simplicidade na leitura das cifras.Ícones minimalistas (lucide-react ou Heroicons).Responsividade:Mobile-first, com menu hambúrguer no topo.Cards de música em grid adaptável.Texto das cifras ajustável no zoom.
+Quero que você implemente uma funcionalidade que, ao receber um link de uma música do YouTube, execute os seguintes passos:
+
+Captura de Áudio
+
+Extrair o áudio da música diretamente do link do YouTube (utilizando youtube-dl ou yt-dlp).
+
+Converter para um formato manipulável (ex.: .wav ou .mp3).
+
+Reconhecimento de Acordes
+
+Utilizar uma biblioteca de análise de áudio (ex.: essentia, librosa, madmom ou integração com a API do Chordify se disponível).
+
+Identificar progressões de acordes ao longo da faixa, com marcação de tempo (timeline).
+
+Sincronização da Letra
+
+Tentar buscar automaticamente a letra via API de lyrics (Musixmatch, Genius API ou outra).
+
+Sincronizar a letra com a linha do tempo dos acordes (se não houver sync disponível, exibir letra e acordes em paralelo).
+
+Renderização no Frontend
+
+Mostrar acordes acima da letra, no mesmo estilo do Cifras Club.
+
+Criar player interativo com barra de progresso, mostrando onde o usuário está na música.
+
+Permitir transposição de tom (subir/baixar meio tom).
+
+Adicionar modo de rolagem automática.
+
+Extra (Diferencial)
+
+Opção de exportar cifra em PDF.
+
+Opção de salvar nos favoritos do usuário.
+
+Opção de praticar no modo karaokê (acordes mudando em tempo real).
+
+O layout deve ser responsivo, inspirado no Cifras Club + Chordify:
+
+Letras grandes e legíveis.
+
+Acordes destacados em cor diferente.
+
+Player fixo no topo para controlar a reprodução.

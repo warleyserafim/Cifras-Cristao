@@ -14,7 +14,8 @@
     "next": "15.5.2",
     "nprogress": "^0.2.0",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "react-youtube": "^10.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

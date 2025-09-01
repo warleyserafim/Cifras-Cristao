@@ -16,7 +16,7 @@ interface GuitarChordDiagramProps {
 const GuitarChordDiagram: React.FC<GuitarChordDiagramProps> = ({ diagram }) => {
   const numFrets = 5; // Display 5 frets
   const numStrings = 6; // Standard 6-string guitar
-  const fretWidth = 25; // Width of each fret space
+  const fretWidth = 17; // Width of each fret space
   const stringSpacing = 20; // Spacing between strings
   const nutHeight = 6; // Height of the nut
   const diagramHeight = nutHeight + (numFrets * fretWidth);
