@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { analyzeMusic } from '@/services/api';
 import axios from 'axios';
-import YouTube from 'react-youtube';
+import YouTube, { YouTubePlayer, YouTubeEvent } from 'react-youtube';
 import GuitarChordDiagram from '@/components/GuitarChordDiagram';
 import { CHORD_DIAGRAMS } from '@/utils/chordDiagrams';
 
@@ -72,7 +72,7 @@ const ChordTimeline = ({ chords, currentTime }: { chords: ChordData[]; currentTi
 // 2. Main Player Component
 const AnalysisPlayer = ({ result, videoId }: { result: AnalysisResult; videoId: string }) => {
   const [currentTime, setCurrentTime] = useState(0);
-  const playerRef = useRef<any>(null);
+  const playerRef = useRef<YouTubePlayer | null>(null);
 
   useEffect(() => {
     const pollTime = setInterval(() => {
@@ -89,7 +89,7 @@ const AnalysisPlayer = ({ result, videoId }: { result: AnalysisResult; videoId: 
     };
   }, []);
 
-  const onReady = (event: any) => {
+  const onReady = (event: YouTubeEvent<YouTubePlayer>) => {
     playerRef.current = event.target;
   };
 
