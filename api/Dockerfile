@@ -23,8 +23,10 @@ RUN pip3 install --no-cache-dir yt-dlp librosa
 COPY package*.json ./
 
 # Instalar dependências do Node.js
+# Instalar dependências do Node.js
 RUN npm install
-ENV DATABASE_URL="postgresql://user:password@localhost:5432/mydb?schema=public"
+ENV DATABASE_URL="postgresql://cifras_user:PqqThqzvabtKngHlcXd9jnDFYTkkxmoP@dpg-d2pm44fdiees73c5t06g-a.oregon-postgres.render.com/cifras"
+COPY prisma ./prisma
 RUN npx prisma generate
 
 # Copiar o restante do código
