@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import ChordTooltip from '@/components/ChordTooltip';
 import CommentSection from '@/components/CommentSection';
+import { AxiosResponse } from 'axios';
 
 // Define types for our data
 interface MusicData {
@@ -159,11 +160,11 @@ export default function MusicPage() {
 
     const fetchMusic = async () => {
       try {
-        const response = await getMusicById(musicId);
+        const response: AxiosResponse<MusicData> = await getMusicById(musicId);
         setMusic(response.data);
 
         if (currentUserId && token) {
-          const favoritesResponse = await getFavoriteMusic(currentUserId, token);
+          const favoritesResponse: AxiosResponse<MusicData[]> = await getFavoriteMusic(currentUserId, token);
           const favorites: MusicData[] = favoritesResponse.data;
           setIsFavorited(Array.isArray(favorites) && favorites.some((favMusic: MusicData) => favMusic.id === musicId));
         }
