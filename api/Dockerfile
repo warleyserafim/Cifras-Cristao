@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Instalar yt-dlp e librosa via pip
-RUN pip3 install --no-cache-dir yt-dlp librosa
+RUN pip3 install --no-cache-dir yt-dlp librosa matplotlib
 
 # Copiar package.json e package-lock.json
 COPY package*.json ./
