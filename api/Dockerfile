@@ -24,6 +24,7 @@ COPY package*.json ./
 
 # Instalar dependências do Node.js
 RUN npm install
+RUN npx prisma generate
 
 # Copiar o restante do código
 COPY . .
