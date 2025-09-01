@@ -21,6 +21,7 @@ interface CommentSectionProps {
 interface User {
   id: string;
   role: string;
+  name: string;
 }
 
 export default function CommentSection({ musicId }: CommentSectionProps) {
