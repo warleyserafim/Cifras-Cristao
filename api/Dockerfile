@@ -24,6 +24,7 @@ COPY package*.json ./
 
 # Instalar dependências do Node.js
 RUN npm install
+ENV DATABASE_URL="postgresql://user:password@localhost:5432/mydb?schema=public"
 RUN npx prisma generate
 
 # Copiar o restante do código
