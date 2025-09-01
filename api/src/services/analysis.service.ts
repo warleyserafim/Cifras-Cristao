@@ -2,14 +2,15 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import * as path from 'path';
 import * as fs from 'fs';
-import axios from 'axios'; // Import axios
+import axios from 'axios';
 
 const execPromise = promisify(exec);
 
 export const analyzeMusic = async (youtubeUrl: string) => {
-  const tempDir = path.join(__dirname, '../../tmp');
+  // Pasta temporária dentro do container
+  const tempDir = path.join(__dirname, '../../tmp'); // ou '/app/tmp'
   if (!fs.existsSync(tempDir)) {
-    fs.mkdirSync(tempDir);
+    fs.mkdirSync(tempDir, { recursive: true });
   }
 
   const audioFileId = `audio_${Date.now()}`;
@@ -17,48 +18,45 @@ export const analyzeMusic = async (youtubeUrl: string) => {
   const audioFileOutputPath = path.join(tempDir, audioFileId);
   const pythonScriptPath = path.join(__dirname, '../utils/chord_recognizer.py');
 
+  // Caminho do Secret File montado pelo Render
+  const cookiesPath = '/etc/secrets/cookies.txt'; // ajuste se usou /etc/secrets/cookies.txt
+
   let videoTitle = '';
   let videoArtist = '';
 
   try {
-    // 0. Get video metadata using yt-dlp
+    // 0. Pegar metadata do vídeo
     console.log(`Getting metadata for ${youtubeUrl}...`);
     const { stdout: metaStdout, stderr: metaStderr } = await execPromise(
-      `yt-dlp --print-json --cookies /tmp/cookies.txt "${youtubeUrl}"`,
-      { maxBuffer: 1024 * 1024 * 10 } // Increase buffer to 10MB
+      `yt-dlp --print-json --cookies "${cookiesPath}" "${youtubeUrl}"`,
+      { maxBuffer: 1024 * 1024 * 10 }
     );
     if (metaStderr) console.error('yt-dlp metadata stderr:', metaStderr);
     const metadata = JSON.parse(metaStdout);
-    videoArtist = metadata.artist || metadata.channel || ''; // Use channel as fallback for artist
+    videoArtist = metadata.artist || metadata.channel || '';
 
-    // Try to get a clean title, preferring metadata.track
     let rawTitle = metadata.track || metadata.title || '';
-
-    // Clean title by removing extra tags like (Official Video), [HD], etc.
     let cleanedTitle = rawTitle.replace(/\s*\(.+?\)|\[.+?\]/g, '').trim();
 
-    // If artist is found in the title, remove it.
     if (videoArtist && cleanedTitle.toLowerCase().startsWith(videoArtist.toLowerCase())) {
-      // Remove artist name and any leading separators like ' - '
       cleanedTitle = cleanedTitle.substring(videoArtist.length).replace(/^\s*-\s*/, '').trim();
     }
-    
     videoTitle = cleanedTitle;
 
-    // 1. Download audio using yt-dlp
+    // 1. Baixar áudio
     console.log(`Downloading audio from ${youtubeUrl} to ${audioFilePath}...`);
     const { stdout: downloadStdout, stderr: downloadStderr } = await execPromise(
-      `yt-dlp -x --audio-format wav --cookies /tmp/cookies.txt -o "${audioFileOutputPath}" "${youtubeUrl}"`,
-      { maxBuffer: 1024 * 1024 * 50 } // Increase buffer to 50MB for audio download output
+      `yt-dlp -x --audio-format wav --cookies "${cookiesPath}" -o "${audioFileOutputPath}" "${youtubeUrl}"`,
+      { maxBuffer: 1024 * 1024 * 50 }
     );
     console.log('yt-dlp stdout:', downloadStdout);
     if (downloadStderr) console.error('yt-dlp stderr:', downloadStderr);
 
-    // 2. Run Python chord recognition script
+    // 2. Rodar script Python de reconhecimento de acordes
     console.log(`Running chord recognition on ${audioFilePath}...`);
     const { stdout: pythonStdout, stderr: pythonStderr } = await execPromise(
-      `python "${pythonScriptPath}" "${audioFilePath}"`,
-      { maxBuffer: 1024 * 1024 * 10 } // Increase buffer to 10MB for Python script output
+      `python3 "${pythonScriptPath}" "${audioFilePath}"`,
+      { maxBuffer: 1024 * 1024 * 10 }
     );
     console.log('Python script stdout:', pythonStdout);
     if (pythonStderr) {
@@ -67,14 +65,12 @@ export const analyzeMusic = async (youtubeUrl: string) => {
     }
 
     const chordsResultRaw = JSON.parse(pythonStdout);
-
-    // Check if python script returned an error
     if (chordsResultRaw.error) {
       throw new Error(`Chord recognition failed: ${chordsResultRaw.error}`);
     }
     const chordsResult = chordsResultRaw;
 
-    // 3. Fetch timed lyrics from Lrclib.net
+    // 3. Buscar letras sincronizadas
     let plainLyrics = '';
     let syncedLyrics = '';
     if (videoTitle && videoArtist) {
@@ -103,7 +99,7 @@ export const analyzeMusic = async (youtubeUrl: string) => {
       plainLyrics: plainLyrics || 'Lyrics not found.',
     };
   } finally {
-    // Clean up temporary audio file
+    // Limpar arquivo de áudio temporário
     if (fs.existsSync(audioFilePath)) {
       fs.unlinkSync(audioFilePath);
       console.log(`Cleaned up ${audioFilePath}`);
