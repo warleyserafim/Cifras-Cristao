@@ -65,6 +65,13 @@ export const addFavoriteMusic = (userId: string, musicId: string, token: string)
 export const removeFavoriteMusic = (userId: string, musicId: string, token: string) => api.delete(`/users/${userId}/favorites/${musicId}`, getAuthHeaders(token)); // New
 export const getFavoriteMusic = (userId: string, token: string) => api.get(`/users/${userId}/favorites`, getAuthHeaders(token)); // New
 
+// Comment Endpoints
+export const getCommentsByMusicId = (musicId: string) => api.get(`/comments/${musicId}`);
+export const createComment = (data: { content: string; musicId: string }, token: string) => api.post('/comments', data, getAuthHeaders(token));
+export const deleteComment = (commentId: string, token: string) => api.delete(`/comments/${commentId}`, getAuthHeaders(token));
+
+// Auth Endpoints
+
 // Auth Endpoints
 export const login = (credentials: Record<string, unknown>) => api.post('/auth/login', credentials);
 export const register = (userData: Record<string, unknown>) => api.post('/auth/register', userData);
