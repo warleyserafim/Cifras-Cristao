@@ -1,32 +1,38 @@
-# Use a Node.js base image
-FROM node:20-slim
+# Use uma imagem Node.js mais completa (baseada em Debian)
+FROM node:20-bullseye
 
-# Set working directory
+# Diretório de trabalho
 WORKDIR /app
 
-# Install Python and pip
-RUN apt-get update && apt-get install -y python3 python3-pip && rm -rf /var/lib/apt/lists/*
+# Instalar dependências do sistema (Python + FFmpeg + bibliotecas para librosa)
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-dev \
+    build-essential \
+    libsndfile1 \
+    libatlas-base-dev \
+    gfortran \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install FFmpeg
-RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
+# Instalar yt-dlp e librosa via pip
+RUN pip3 install --no-cache-dir yt-dlp librosa
 
-# Install yt-dlp
-RUN pip3 install yt-dlp librosa
-
-# Copy package.json and package-lock.json
+# Copiar package.json e package-lock.json
 COPY package*.json ./
 
-# Install Node.js dependencies
+# Instalar dependências do Node.js
 RUN npm install
 
-# Copy the rest of the application code
+# Copiar o restante do código
 COPY . .
 
-# Build the TypeScript code
+# Build do TypeScript
 RUN npm run build
 
-# Expose the port the app runs on
+# Porta exposta
 EXPOSE 3000
 
-# Command to run the application
+# Rodar a aplicação
 CMD ["node", "dist/index.js"]
