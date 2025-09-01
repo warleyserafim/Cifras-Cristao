@@ -9,17 +9,24 @@ const execPromise = promisify(exec);
 export const analyzeMusic = async (youtubeUrl: string) => {
   // Pasta temporária dentro do container
   const tempDir = path.join(__dirname, '../../tmp'); // ou '/app/tmp'
-  if (!fs.existsSync(tempDir)) {
-    fs.mkdirSync(tempDir, { recursive: true });
-  }
+  if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
 
   const audioFileId = `audio_${Date.now()}`;
   const audioFilePath = path.join(tempDir, `${audioFileId}.wav`);
   const audioFileOutputPath = path.join(tempDir, audioFileId);
   const pythonScriptPath = path.join(__dirname, '../utils/chord_recognizer.py');
 
-  // Caminho do Secret File montado pelo Render
-  const cookiesPath = '/etc/secrets/cookies.txt'; // ajuste se usou /etc/secrets/cookies.txt
+  // Caminho do Secret File (somente leitura)
+  const secretCookiesPath = '/etc/secrets/cookies.txt';
+
+  // Caminho temporário gravável para yt-dlp
+  const cookiesPath = path.join(tempDir, 'cookies.txt');
+
+  // Copiar o Secret File para a pasta temporária
+  if (!fs.existsSync(secretCookiesPath)) {
+    throw new Error(`Secret cookies file not found at ${secretCookiesPath}`);
+  }
+  fs.copyFileSync(secretCookiesPath, cookiesPath);
 
   let videoTitle = '';
   let videoArtist = '';
@@ -34,10 +41,8 @@ export const analyzeMusic = async (youtubeUrl: string) => {
     if (metaStderr) console.error('yt-dlp metadata stderr:', metaStderr);
     const metadata = JSON.parse(metaStdout);
     videoArtist = metadata.artist || metadata.channel || '';
-
     let rawTitle = metadata.track || metadata.title || '';
     let cleanedTitle = rawTitle.replace(/\s*\(.+?\)|\[.+?\]/g, '').trim();
-
     if (videoArtist && cleanedTitle.toLowerCase().startsWith(videoArtist.toLowerCase())) {
       cleanedTitle = cleanedTitle.substring(videoArtist.length).replace(/^\s*-\s*/, '').trim();
     }
@@ -63,11 +68,8 @@ export const analyzeMusic = async (youtubeUrl: string) => {
       console.error('Python script stderr:', pythonStderr);
       throw new Error(`Python script error: ${pythonStderr}`);
     }
-
     const chordsResultRaw = JSON.parse(pythonStdout);
-    if (chordsResultRaw.error) {
-      throw new Error(`Chord recognition failed: ${chordsResultRaw.error}`);
-    }
+    if (chordsResultRaw.error) throw new Error(`Chord recognition failed: ${chordsResultRaw.error}`);
     const chordsResult = chordsResultRaw;
 
     // 3. Buscar letras sincronizadas
@@ -77,10 +79,7 @@ export const analyzeMusic = async (youtubeUrl: string) => {
       console.log(`Fetching timed lyrics for ${videoArtist} - ${videoTitle}...`);
       try {
         const response = await axios.get('https://lrclib.net/api/search', {
-          params: {
-            artist_name: videoArtist,
-            track_name: videoTitle,
-          },
+          params: { artist_name: videoArtist, track_name: videoTitle },
         });
         if (response.data && response.data.length > 0) {
           plainLyrics = response.data[0].plainLyrics || '';
@@ -95,14 +94,14 @@ export const analyzeMusic = async (youtubeUrl: string) => {
       title: videoTitle,
       artist: videoArtist,
       chords: chordsResult,
-      syncedLyrics: syncedLyrics,
+      syncedLyrics,
       plainLyrics: plainLyrics || 'Lyrics not found.',
     };
   } finally {
     // Limpar arquivo de áudio temporário
-    if (fs.existsSync(audioFilePath)) {
-      fs.unlinkSync(audioFilePath);
-      console.log(`Cleaned up ${audioFilePath}`);
-    }
+    if (fs.existsSync(audioFilePath)) fs.unlinkSync(audioFilePath);
+    // Limpar cookies temporário
+    if (fs.existsSync(cookiesPath)) fs.unlinkSync(cookiesPath);
+    console.log(`Cleaned up ${audioFilePath} and temporary cookies`);
   }
 };
