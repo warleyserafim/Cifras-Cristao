@@ -7,7 +7,7 @@ import axios from 'axios';
 const execPromise = promisify(exec);
 
 export const analyzeMusic = async (youtubeUrl: string) => {
-  // Pasta temporária dentro do container
+  // Pasta temporária dentro do container/host
   const tempDir = path.join(__dirname, '../../tmp'); // ou '/app/tmp'
   if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
 
@@ -16,18 +16,6 @@ export const analyzeMusic = async (youtubeUrl: string) => {
   const audioFileOutputPath = path.join(tempDir, audioFileId);
   const pythonScriptPath = path.join(__dirname, '../utils/chord_recognizer.py');
 
-  // Caminho do Secret File (somente leitura)
-  const secretCookiesPath = '/etc/secrets/cookies.txt';
-
-  // Caminho temporário gravável para yt-dlp
-  const cookiesPath = path.join(tempDir, 'cookies.txt');
-
-  // Copiar o Secret File para a pasta temporária
-  if (!fs.existsSync(secretCookiesPath)) {
-    throw new Error(`Secret cookies file not found at ${secretCookiesPath}`);
-  }
-  fs.copyFileSync(secretCookiesPath, cookiesPath);
-
   let videoTitle = '';
   let videoArtist = '';
 
@@ -35,10 +23,11 @@ export const analyzeMusic = async (youtubeUrl: string) => {
     // 0. Pegar metadata do vídeo
     console.log(`Getting metadata for ${youtubeUrl}...`);
     const { stdout: metaStdout, stderr: metaStderr } = await execPromise(
-      `yt-dlp --print-json --cookies "${cookiesPath}" "${youtubeUrl}"`,
+      `yt-dlp --print-json "${youtubeUrl}"`,
       { maxBuffer: 1024 * 1024 * 10 }
     );
     if (metaStderr) console.error('yt-dlp metadata stderr:', metaStderr);
+
     const metadata = JSON.parse(metaStdout);
     videoArtist = metadata.artist || metadata.channel || '';
     let rawTitle = metadata.track || metadata.title || '';
@@ -51,7 +40,7 @@ export const analyzeMusic = async (youtubeUrl: string) => {
     // 1. Baixar áudio
     console.log(`Downloading audio from ${youtubeUrl} to ${audioFilePath}...`);
     const { stdout: downloadStdout, stderr: downloadStderr } = await execPromise(
-      `yt-dlp -x --audio-format wav --cookies "${cookiesPath}" -o "${audioFileOutputPath}" "${youtubeUrl}"`,
+      `yt-dlp -x --audio-format wav -o "${audioFileOutputPath}" "${youtubeUrl}"`,
       { maxBuffer: 1024 * 1024 * 50 }
     );
     console.log('yt-dlp stdout:', downloadStdout);
@@ -60,7 +49,7 @@ export const analyzeMusic = async (youtubeUrl: string) => {
     // 2. Rodar script Python de reconhecimento de acordes
     console.log(`Running chord recognition on ${audioFilePath}...`);
     const { stdout: pythonStdout, stderr: pythonStderr } = await execPromise(
-      `python3 "${pythonScriptPath}" "${audioFilePath}"`,
+      `python "${pythonScriptPath}" "${audioFilePath}"`,
       { maxBuffer: 1024 * 1024 * 10 }
     );
     console.log('Python script stdout:', pythonStdout);
@@ -100,8 +89,6 @@ export const analyzeMusic = async (youtubeUrl: string) => {
   } finally {
     // Limpar arquivo de áudio temporário
     if (fs.existsSync(audioFilePath)) fs.unlinkSync(audioFilePath);
-    // Limpar cookies temporário
-    if (fs.existsSync(cookiesPath)) fs.unlinkSync(cookiesPath);
-    console.log(`Cleaned up ${audioFilePath} and temporary cookies`);
+    console.log(`Cleaned up ${audioFilePath}`);
   }
 };
