@@ -118,10 +118,17 @@ export default function AuthButton() {
   }
 
   return (
-    <Link href="/login">
-      <button className="btn btn-primary">
-        Login
-      </button>
-    </Link>
+    <div className="flex items-center gap-2">
+      <Link href="/login">
+        <div className="px-4 py-2 text-sm font-medium text-[var(--color-text-primary)] bg-transparent border border-[var(--color-border)] rounded-md hover:bg-[var(--color-hover)] transition-colors">
+          Login
+        </div>
+      </Link>
+      <Link href="/register">
+        <div className="px-4 py-2 text-sm font-medium text-white bg-[var(--color-primary)] border border-transparent rounded-md hover:bg-opacity-90 transition-colors">
+          Cadastrar
+        </div>
+      </Link>
+    </div>
   );
 }
