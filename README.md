@@ -1,4 +1,4 @@
-# Cifras Cristao
+# Cifra Catolica
 
 Este é um projeto full-stack de um site de cifras cristãs, desenvolvido com Next.js para o frontend e Node.js (Express) para o backend.
 
