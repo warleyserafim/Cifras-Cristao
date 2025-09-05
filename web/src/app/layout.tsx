@@ -18,7 +18,7 @@ const roboto_mono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Cifras Cristao",
+  title: "Cifra Catolica",
   description: "Cifras e tablaturas para músicos cristãos.",
   icons: {
     icon: '/assets/favicon.ico',
@@ -41,8 +41,8 @@ export default function RootLayout({
         <header className="bg-[var(--color-card-background)] p-4 shadow-md">
           <nav className="container mx-auto flex justify-between items-center">
             <Link href="/" className="flex items-center gap-2">
-              <Image src="/assets/logo.png" alt="Cifras Cristao Logo" width={40} height={40} />
-              <span className="text-2xl font-bold text-[var(--color-text-primary)]">Cifras Cristao</span>
+              <Image src="/assets/logo.png" alt="Cifra Catolica Logo" width={40} height={40} />
+              <span className="text-2xl font-bold text-[var(--color-text-primary)]">Cifra Catolica</span>
             </Link>
             <div>
                             <AuthButton />
