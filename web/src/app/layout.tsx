@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
+import 'react-toastify/dist/ReactToastify.css'; // Import toastify css
+import { ToastContainer } from 'react-toastify'; // Import ToastContainer
 import AuthButton from "@/components/AuthButton";
 import Image from "next/image";
 import { Suspense } from 'react';
@@ -38,12 +40,24 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <ProgressBar />
         </Suspense>
+         <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark" // Or "light" or "colored"
+        />
         <header className="bg-[var(--color-card-background)] p-4 shadow-md">
           <nav className="container mx-auto flex justify-between items-center">
-            <Link href="/" className="flex items-center gap-2">
-              <Image src="/assets/logo.png" alt="Cifra Católica Logo" width={40} height={40} />
+              <Link href="/" className="flex items-center gap-2">
+                <Image src="/assets/logo.png" alt="Cifra Católica Logo" width={40} height={40} />
               <span className="text-2xl font-bold text-[var(--color-text-primary)]">Cifra Católica</span>
-            </Link>
+              </Link>
             <div>
                             <AuthButton />
             </div>
