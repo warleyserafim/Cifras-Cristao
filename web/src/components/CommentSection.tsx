@@ -17,6 +17,8 @@ interface Comment {
 
 interface CommentSectionProps {
   musicId: string;
+  currentUserId: string | undefined; // currentUserId can be undefined if user is not logged in
+  isAdmin: boolean; // Pass isAdmin as a prop
 }
 
 interface User {
@@ -25,11 +27,9 @@ interface User {
   name: string;
 }
 
-export default function CommentSection({ musicId }: CommentSectionProps) {
+export default function CommentSection({ musicId, currentUserId, isAdmin }: CommentSectionProps) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
 
   const fetchComments = useCallback(async () => {
     try {
@@ -41,26 +41,17 @@ export default function CommentSection({ musicId }: CommentSectionProps) {
   }, [musicId]);
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    const tokenData = localStorage.getItem('token');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-    if (tokenData) {
-      setToken(tokenData);
-    }
     fetchComments();
   }, [fetchComments]);
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim() || !token) return;
+    const token = localStorage.getItem('token'); // Get token here
+    if (!newComment.trim() || !token || !currentUserId) return; // Check currentUserId
 
     try {
       const response = await createComment({ musicId, content: newComment });
-      // Assuming the response.data contains the full comment object with user info
-      const newCommentData = { ...response.data, user: { id: user!.id, name: user!.name } };
-      setComments([...comments, newCommentData]);
+      setComments([...comments, response.data]); // Assuming response.data is the full comment object
       setNewComment('');
     } catch (error) {
       console.error('Error posting comment:', error);
@@ -68,6 +59,7 @@ export default function CommentSection({ musicId }: CommentSectionProps) {
   };
 
   const handleDeleteComment = async (commentId: string) => {
+    const token = localStorage.getItem('token'); // Get token here
     if (!token) return;
     if (window.confirm('Tem certeza que deseja excluir este comentário?')) {
         try {
@@ -90,7 +82,7 @@ export default function CommentSection({ musicId }: CommentSectionProps) {
                 <p className="font-bold text-[var(--color-text-primary)]">{comment.user.name}</p>
                 <p className="text-sm text-[var(--color-text-secondary)]">{new Date(comment.createdAt).toLocaleDateString()}</p>
               </div>
-              {(user?.role === 'ADMIN' || user?.id === comment.user.id) && (
+              {(currentUserId && (comment.user.id === currentUserId || isAdmin)) && (
                 <button
                   onClick={() => handleDeleteComment(comment.id)}
                   className="text-sm text-red-500 hover:text-red-400 transition-colors flex items-center gap-1"
@@ -103,7 +95,7 @@ export default function CommentSection({ musicId }: CommentSectionProps) {
           </div>
         ))}
       </div>
-      {user && (
+      {currentUserId && (
         <form onSubmit={handleCommentSubmit} className="mt-6">
           <textarea
             value={newComment}

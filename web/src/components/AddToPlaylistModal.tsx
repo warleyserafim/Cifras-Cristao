@@ -22,7 +22,7 @@ const AddToPlaylistModal: React.FC<AddToPlaylistModalProps> = ({ musicId, onClos
 
   const fetchPlaylists = useCallback(async () => {
     try {
-      const res = await getUserPlaylists(token!);
+      const res = await getUserPlaylists();
       setPlaylists(res.data);
     } catch (error) {
       console.error('Failed to fetch playlists', error);
@@ -37,7 +37,7 @@ const AddToPlaylistModal: React.FC<AddToPlaylistModalProps> = ({ musicId, onClos
 
   const handleAddToPlaylist = async (playlistId: string) => {
     try {
-      await addMusicToPlaylist(playlistId, musicId, token!);
+      await addMusicToPlaylist(playlistId, musicId);
       onClose();
       alert('Música adicionada à playlist com sucesso!');
     } catch (error) {
