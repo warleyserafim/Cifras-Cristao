@@ -83,6 +83,15 @@ export const getCommentsByMusicId = (musicId: string) => api.get(`/comments/${mu
 export const createComment = (data: { content: string; musicId: string }) => api.post('/comments', data);
 export const deleteComment = (commentId: string) => api.delete(`/comments/${commentId}`);
 
+// Playlist Endpoints
+export const getUserPlaylists = (token: string) => api.get('/playlists', getAuthHeaders(token));
+export const createPlaylist = (data: { name: string }, token: string) => api.post('/playlists', data, getAuthHeaders(token));
+export const getPlaylistById = (id: string, token: string) => api.get(`/playlists/${id}`, getAuthHeaders(token));
+export const updatePlaylist = (id: string, data: { name: string }, token: string) => api.put(`/playlists/${id}`, data, getAuthHeaders(token));
+export const deletePlaylist = (id: string, token: string) => api.delete(`/playlists/${id}`, getAuthHeaders(token));
+export const addMusicToPlaylist = (playlistId: string, musicId: string, token: string) => api.post(`/playlists/${playlistId}/musics/${musicId}`, {}, getAuthHeaders(token));
+export const removeMusicFromPlaylist = (playlistId: string, musicId: string, token: string) => api.delete(`/playlists/${playlistId}/musics/${musicId}`, getAuthHeaders(token));
+
 // Auth Endpoints
 export const login = (credentials: Record<string, unknown>) => api.post('/auth/login', credentials);
 export const register = (userData: Record<string, unknown>) => api.post('/auth/register', userData);

@@ -1,22 +1,25 @@
 @import "tailwindcss";
 
+
 :root {
   --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Lora', serif;
+  --font-handwritten: 'Dancing Script', cursive;
   --font-mono: 'Roboto Mono', monospace;
 
-  /* New Color Palette (Dark Theme Focused) */
-  --color-primary: #5E5CE6; /* A vibrant purple */
-  --color-secondary: #34D399; /* A bright green for accents */
-  --color-accent: #FBBF24; /* A warm yellow for highlights */
+  /* Cifras Católicas Dark Theme */
+  --color-primary: #B8860B; /* Goldenrod - for accents and interactive elements */
+  --color-secondary: #DAA520; /* Goldenrod Dark - for hover states */
+  --color-accent: #FFD700; /* Gold - for highlights */
   
-  --color-background: #121212; /* A very dark gray, almost black */
-  --color-card-background: #1E1E1E; /* A slightly lighter dark gray */
+  --color-background: #1A1A1A; /* Very dark gray/almost black */
+  --color-card-background: #2C2C2C; /* Slightly lighter dark gray for cards */
   
-  --color-text-primary: #FFFFFF; /* White */
-  --color-text-secondary: #A0A0A0; /* A light gray for secondary text */
-  --color-border: #333333; /* A subtle border color */
+  --color-text-primary: #F0F0F0; /* Soft white */
+  --color-text-secondary: #A0A0A0; /* Light gray for secondary text */
+  --color-border: #444444; /* Subtle border color */
 
-  --color-destructive: #EF4444; /* A bright red for destructive actions */
+  --color-destructive: #EF4444; /* Red for destructive actions */
 }
 
 body {
@@ -28,8 +31,15 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif); /* Apply serif font to headings */
   font-weight: 700;
   color: var(--color-text-primary);
+}
+
+/* Specific style for handwritten titles, if needed */
+.title-handwritten {
+  font-family: var(--font-handwritten);
+  font-weight: 700;
 }
 
 h1 { font-size: 2.5rem; }
