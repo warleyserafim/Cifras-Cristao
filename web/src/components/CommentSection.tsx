@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getCommentsByMusicId, createComment, deleteComment } from '../services/api';
 
 interface Comment {
@@ -30,6 +30,15 @@ export default function CommentSection({ musicId }: CommentSectionProps) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
+  const fetchComments = useCallback(async () => {
+    try {
+      const response = await getCommentsByMusicId(musicId);
+      setComments(response.data);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    }
+  }, [musicId]);
+
   useEffect(() => {
     const userData = localStorage.getItem('user');
     const tokenData = localStorage.getItem('token');
@@ -40,16 +49,7 @@ export default function CommentSection({ musicId }: CommentSectionProps) {
       setToken(tokenData);
     }
     fetchComments();
-  }, [musicId]);
-
-  const fetchComments = async () => {
-    try {
-      const response = await getCommentsByMusicId(musicId);
-      setComments(response.data);
-    } catch (error) {
-      console.error('Error fetching comments:', error);
-    }
-  };
+  }, [fetchComments]);
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,4 +119,3 @@ export default function CommentSection({ musicId }: CommentSectionProps) {
     </div>
   );
 }
-''

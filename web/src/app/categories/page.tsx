@@ -20,7 +20,7 @@ export default function ManageCategoriesPage() {
         const response = await getCategories();
         setCategories(response.data);
         setLoading(false);
-      } catch (err) {
+      } catch (_err) {
         setError('Falha ao carregar categorias.');
         setLoading(false);
       }
@@ -35,7 +35,7 @@ export default function ManageCategoriesPage() {
         if (!token) throw new Error('Authentication required');
         await deleteCategory(id, token);
         setCategories(categories.filter(c => c.id !== id));
-      } catch (err) {
+      } catch (_err) {
         alert('Falha ao apagar categoria.');
       }
     }

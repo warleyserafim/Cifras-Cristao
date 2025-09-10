@@ -8,6 +8,7 @@ import categoryRoutes from './routes/category.routes';
 import tagRoutes from './routes/tag.routes';
 import userRoutes from './routes/user.routes';
 import commentRoutes from './routes/comment.routes';
+import playlistRoutes from './routes/playlist.routes';
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/tags', tagRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/comments', commentRoutes);
+app.use('/api/playlists', playlistRoutes);
 
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);

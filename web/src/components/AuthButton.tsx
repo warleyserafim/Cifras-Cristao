@@ -103,6 +103,11 @@ export default function AuthButton() {
                   Minhas Cifras Favoritas
                 </div>
               </Link>
+              <Link href="/my-playlists">
+                <div className="block px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-background)] hover:text-[var(--color-primary)]">
+                  Minhas Playlists
+                </div>
+              </Link>
               <div className="border-t border-[var(--color-border)]"></div>
               <button
                 onClick={handleLogout}

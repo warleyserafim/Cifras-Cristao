@@ -12,7 +12,7 @@ export default function ProgressBar() {
   useEffect(() => {
     NProgress.configure({ showSpinner: false });
 
-    const handleStart = () => NProgress.start();
+    NProgress.start();
     const handleStop = () => NProgress.done();
 
     handleStop(); // Stop progress on initial load
