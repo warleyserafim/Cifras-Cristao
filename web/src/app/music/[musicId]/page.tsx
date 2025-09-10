@@ -5,8 +5,10 @@ import { useRouter, useParams } from 'next/navigation';
 import { getMusicById, deleteMusic, addFavoriteMusic, removeFavoriteMusic, getFavoriteMusic } from '@/services/api';
 import Image from 'next/image';
 import Link from 'next/link';
+import useAuth from '@/hooks/useAuth';
 import ChordTooltip from '@/components/ChordTooltip';
 import CommentSection from '@/components/CommentSection';
+import AddToPlaylistModal from '@/components/AddToPlaylistModal';
 
 // Define types for our data
 interface MusicData {
@@ -136,34 +138,22 @@ export default function MusicPage() {
   const [error, setError] = useState<string | null>(null);
   const [semitoneChange, setSemitoneChange] = useState(0);
   const [fontSize, setFontSize] = useState(16);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn, user } = useAuth();
   const [isFavorited, setIsFavorited] = useState(false);
-  const [userRole, setUserRole] = useState<string | null>(null);
+  const [showAddToPlaylistModal, setShowAddToPlaylistModal] = useState(false);
 
   const [hoveredChord, setHoveredChord] = useState<string | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number, y: number } | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-    let currentUserId: string | null = null;
-
-    if (token && storedUser) {
-      setIsLoggedIn(true);
-      const user = JSON.parse(storedUser);
-      currentUserId = user.id;
-      setUserRole(user.role);
-    } else {
-      setIsLoggedIn(false);
-    }
-
     const fetchMusic = async () => {
       try {
         const response = await getMusicById(musicId);
         setMusic(response.data);
 
-        if (currentUserId && token) {
-          const favoritesResponse = await getFavoriteMusic(currentUserId, token);
+        if (user) {
+          const token = localStorage.getItem('token');
+          const favoritesResponse = await getFavoriteMusic(user.id, token!);
           const favorites: MusicData[] = favoritesResponse.data;
           setIsFavorited(Array.isArray(favorites) && favorites.some((favMusic: MusicData) => favMusic.id === musicId));
         }
@@ -175,7 +165,7 @@ export default function MusicPage() {
       }
     };
     fetchMusic();
-  }, [musicId]);
+  }, [musicId, user]);
 
   if (loading) {
     return <div className="text-center text-xl mt-8">Carregando...</div>;
@@ -210,16 +200,13 @@ export default function MusicPage() {
     }
 
     const token = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-    if (!token || !storedUser) return;
-
-    const currentUserId = JSON.parse(storedUser).id;
+    if (!token || !user) return;
 
     try {
       if (isFavorited) {
-        await removeFavoriteMusic(currentUserId, music.id, token);
+        await removeFavoriteMusic(user.id, music.id, token);
       } else {
-        await addFavoriteMusic(currentUserId, music.id, token);
+        await addFavoriteMusic(user.id, music.id, token);
       }
       setIsFavorited(prev => !prev);
     } catch (err) {
@@ -276,20 +263,67 @@ export default function MusicPage() {
                         )}
                     </div>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-2 items-center">
-                    {isLoggedIn && (
-                        <button onClick={handleToggleFavorite} className={`p-2 rounded-full transition-colors ${isFavorited ? 'text-red-500 bg-red-500/10' : 'text-gray-400 hover:bg-gray-500/20'}`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                        </svg>
-                        </button>
-                    )}
-                    {isLoggedIn && userRole === 'ADMIN' && (
-                        <button onClick={handleDeleteMusic} className="btn-destructive text-sm px-3 py-2">
-                        Apagar
-                        </button>
-                    )}
-                </div>
+           <div className="flex flex-col sm:flex-row gap-2 items-center">
+                {isLoggedIn && (
+                  <>
+                    {/* Botão Favoritar */}
+                    <button
+                      onClick={handleToggleFavorite}
+                      className={`p-2 rounded-full transition-colors ${
+                        isFavorited
+                          ? 'text-red-500 bg-red-500/10'
+                          : 'text-gray-400 hover:bg-gray-500/20'
+                      }`}
+                      aria-label="Adicionar aos favoritos"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M3.172 5.172a4 4 0 015.656 0L10 
+                            6.343l1.172-1.171a4 4 0 115.656 5.656L10 
+                            17.657l-6.828-6.829a4 4 0 010-5.656z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </button>
+
+                    {/* Botão Add to Playlist */}
+                    <button
+                      onClick={() => setShowAddToPlaylistModal(true)}
+                      className="p-2 rounded-full transition-colors text-gray-400 hover:bg-gray-500/20"
+                      aria-label="Adicionar à playlist"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 
+                                7a1 1 0 011-1h10a1 1 0 110 
+                                2H5a1 1 0 01-1-1zM2 11a1 1 0 
+                                011-1h14a1 1 0 110 2H3a1 1 0 
+                                01-1-1z" />
+                      </svg>
+                    </button>
+                  </>
+                )}
+
+                {isLoggedIn && user?.role === 'ADMIN' && (
+                  <button
+                    onClick={handleDeleteMusic}
+                    className="btn-destructive text-sm px-3 py-2"
+                  >
+                    Apagar
+                  </button>
+                )}
+              </div>
+
             </div>
           </header>
 
@@ -351,6 +385,13 @@ export default function MusicPage() {
           chordName={hoveredChord}
           position={tooltipPosition}
           onClose={() => setHoveredChord(null)}
+        />
+      )}
+
+      {showAddToPlaylistModal && (
+        <AddToPlaylistModal
+          musicId={music.id}
+          onClose={() => setShowAddToPlaylistModal(false)}
         />
       )}
     </div>

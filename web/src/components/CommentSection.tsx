@@ -1,8 +1,9 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getCommentsByMusicId, createComment, deleteComment } from '../services/api';
+import { FaTrashAlt, FaPaperPlane } from 'react-icons/fa';
 
 interface Comment {
   id: string;
@@ -30,6 +31,15 @@ export default function CommentSection({ musicId }: CommentSectionProps) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
+  const fetchComments = useCallback(async () => {
+    try {
+      const response = await getCommentsByMusicId(musicId);
+      setComments(response.data);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    }
+  }, [musicId]);
+
   useEffect(() => {
     const userData = localStorage.getItem('user');
     const tokenData = localStorage.getItem('token');
@@ -40,16 +50,7 @@ export default function CommentSection({ musicId }: CommentSectionProps) {
       setToken(tokenData);
     }
     fetchComments();
-  }, [musicId]);
-
-  const fetchComments = async () => {
-    try {
-      const response = await getCommentsByMusicId(musicId);
-      setComments(response.data);
-    } catch (error) {
-      console.error('Error fetching comments:', error);
-    }
-  };
+  }, [fetchComments]);
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,9 +93,9 @@ export default function CommentSection({ musicId }: CommentSectionProps) {
               {(user?.role === 'ADMIN' || user?.id === comment.user.id) && (
                 <button
                   onClick={() => handleDeleteComment(comment.id)}
-                  className="text-sm text-red-500 hover:text-red-400 transition-colors"
+                  className="text-sm text-red-500 hover:text-red-400 transition-colors flex items-center gap-1"
                 >
-                  Excluir
+                  <FaTrashAlt /> Excluir
                 </button>
               )}
             </div>
@@ -111,12 +112,11 @@ export default function CommentSection({ musicId }: CommentSectionProps) {
             className="w-full p-3 rounded-lg bg-[var(--color-background)] border border-[var(--color-border)] focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none transition"
             rows={4}
           />
-          <button type="submit" className="btn btn-primary mt-3">
-            Enviar Comentário
+          <button type="submit" className="btn btn-primary mt-3 flex items-center gap-2">
+            <FaPaperPlane /> Enviar Comentário
           </button>
         </form>
       )}
     </div>
   );
 }
-''

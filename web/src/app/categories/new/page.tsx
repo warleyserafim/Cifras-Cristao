@@ -23,7 +23,7 @@ export default function NewCategoryPage() {
       if (!token) throw new Error('Authentication required');
       await createCategory({ name }, token);
       router.push('/categories');
-    } catch (err) {
+    } catch (_err) {
       setError('Falha ao criar categoria.');
     }
   };

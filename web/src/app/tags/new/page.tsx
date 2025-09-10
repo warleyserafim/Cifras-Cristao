@@ -23,7 +23,7 @@ export default function NewTagPage() {
       if (!token) throw new Error('Authentication required');
       await createTag({ name }, token);
       router.push('/tags');
-    } catch (err) {
+    } catch (_err) {
       setError('Falha ao criar tag.');
     }
   };

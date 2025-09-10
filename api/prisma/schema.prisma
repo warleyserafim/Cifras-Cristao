@@ -23,6 +23,7 @@ model User {
   updatedAt       DateTime  @updatedAt
   favorites       Music[]   @relation("UserFavorites")
   comments        Comment[]
+  playlists       Playlist[]
 }
 
 model Category {
@@ -57,6 +58,7 @@ model Music {
   favoritedBy User[]    @relation("UserFavorites")
   tags        MusicTag[]
   comments    Comment[]
+  playlists   Playlist[] @relation("PlaylistMusics")
 }
 
 model Tag {
@@ -84,6 +86,16 @@ model Comment {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   musicId   String
   music     Music    @relation(fields: [musicId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Playlist {
+  id        String   @id @default(uuid())
+  name      String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  musics    Music[]  @relation("PlaylistMusics")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
