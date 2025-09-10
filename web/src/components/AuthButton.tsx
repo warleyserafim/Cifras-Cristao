@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { FaUserCircle, FaTags, FaUser, FaHeart, FaList, FaSignInAlt, FaUserPlus, FaSignOutAlt } from 'react-icons/fa';
+import { MdCategory } from 'react-icons/md';
 
 interface User {
   name: string;
@@ -64,9 +66,7 @@ export default function AuthButton() {
               <Image src={user.profilePhotoUrl} alt="Profile" width={40} height={40} className="rounded-full border-2 border-[var(--color-border)] hover:border-[var(--color-primary)] transition-colors" />
             ) : (
               <div className="w-10 h-10 rounded-full bg-[var(--color-card-background)] flex items-center justify-center border-2 border-[var(--color-border)] hover:border-[var(--color-primary)] transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[var(--color-text-secondary)]" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                </svg>
+                <FaUserCircle className="h-6 w-6 text-[var(--color-text-secondary)]" />
               </div>
             )}
           </button>
@@ -81,39 +81,39 @@ export default function AuthButton() {
               {isAdmin && (
                 <>
                   <Link href="/categories">
-                    <div className="block px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-background)] hover:text-[var(--color-primary)]">
-                      Gerenciar Categorias
+                    <div className="block px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-background)] hover:text-[var(--color-primary)] flex items-center gap-2">
+                      <MdCategory /> Gerenciar Categorias
                     </div>
                   </Link>
                   <Link href="/tags">
-                    <div className="block px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-background)] hover:text-[var(--color-primary)]">
-                      Gerenciar Tags
+                    <div className="block px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-background)] hover:text-[var(--color-primary)] flex items-center gap-2">
+                      <FaTags /> Gerenciar Tags
                     </div>
                   </Link>
                   <div className="border-t border-[var(--color-border)]"></div>
                 </>
               )}
               <Link href="/profile">
-                <div className="block px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-background)] hover:text-[var(--color-primary)]">
-                  Meu Perfil
+                <div className="block px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-background)] hover:text-[var(--color-primary)] flex items-center gap-2">
+                  <FaUser /> Meu Perfil
                 </div>
               </Link>
               <Link href="/my-favorites">
-                <div className="block px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-background)] hover:text-[var(--color-primary)]">
-                  Minhas Cifras Favoritas
+                <div className="block px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-background)] hover:text-[var(--color-primary)] flex items-center gap-2">
+                  <FaHeart /> Minhas Cifras Favoritas
                 </div>
               </Link>
               <Link href="/my-playlists">
-                <div className="block px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-background)] hover:text-[var(--color-primary)]">
-                  Minhas Playlists
+                <div className="block px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-background)] hover:text-[var(--color-primary)] flex items-center gap-2">
+                  <FaList /> Minhas Playlists
                 </div>
               </Link>
               <div className="border-t border-[var(--color-border)]"></div>
               <button
                 onClick={handleLogout}
-                className="block w-full text-left px-4 py-2 text-sm text-[var(--color-destructive)] hover:bg-[var(--color-background)]"
+                className="block w-full text-left px-4 py-2 text-sm text-[var(--color-destructive)] hover:bg-[var(--color-background)] flex items-center gap-2"
               >
-                Sair
+                <FaSignOutAlt /> Sair
               </button>
             </div>
           )}
@@ -125,13 +125,13 @@ export default function AuthButton() {
   return (
     <div className="flex items-center gap-2">
       <Link href="/login">
-        <div className="px-4 py-2 text-sm font-medium text-[var(--color-text-primary)] bg-transparent border border-[var(--color-border)] rounded-md hover:bg-[var(--color-hover)] transition-colors">
-          Login
+        <div className="px-4 py-2 text-sm font-medium text-[var(--color-text-primary)] bg-transparent border border-[var(--color-border)] rounded-md hover:bg-[var(--color-hover)] transition-colors flex items-center gap-2">
+          <FaSignInAlt /> Login
         </div>
       </Link>
       <Link href="/register">
-        <div className="px-4 py-2 text-sm font-medium text-white bg-[var(--color-primary)] border border-transparent rounded-md hover:bg-opacity-90 transition-colors">
-          Cadastrar
+        <div className="px-4 py-2 text-sm font-medium text-white bg-[var(--color-primary)] border border-transparent rounded-md hover:bg-opacity-90 transition-colors flex items-center gap-2">
+          <FaUserPlus /> Cadastrar
         </div>
       </Link>
     </div>

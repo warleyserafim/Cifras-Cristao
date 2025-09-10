@@ -4,6 +4,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import useAuth from '@/hooks/useAuth';
 import { getUserPlaylists, addMusicToPlaylist } from '@/services/api';
 import Link from 'next/link';
+import { IoMdClose } from 'react-icons/io';
 
 interface Playlist {
   id: string;
@@ -66,9 +67,9 @@ const AddToPlaylistModal: React.FC<AddToPlaylistModalProps> = ({ musicId, onClos
             </Link>
             <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-white font-semibold"
+                className="text-gray-400 hover:text-white font-semibold flex items-center gap-1"
             >
-                Fechar
+                <IoMdClose /> Fechar
             </button>
         </div>
       </div>

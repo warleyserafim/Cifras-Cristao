@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { FaPlus } from 'react-icons/fa';
 
 interface User {
   role: string;
@@ -25,8 +26,8 @@ export default function AdminControls() {
   return (
     <div className="my-6 text-center">
       <Link href="/artists/new">
-        <div className="inline-block bg-[var(--color-accent)] hover:bg-[var(--color-accent)]/80 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-          + Adicionar Novo Artista
+        <div className="inline-flex items-center bg-[var(--color-accent)] hover:bg-[var(--color-accent)]/80 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+          <FaPlus className="mr-2" /> Adicionar Novo Artista
         </div>
       </Link>
     </div>

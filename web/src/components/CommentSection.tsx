@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { getCommentsByMusicId, createComment, deleteComment } from '../services/api';
+import { FaTrashAlt, FaPaperPlane } from 'react-icons/fa';
 
 interface Comment {
   id: string;
@@ -92,9 +93,9 @@ export default function CommentSection({ musicId }: CommentSectionProps) {
               {(user?.role === 'ADMIN' || user?.id === comment.user.id) && (
                 <button
                   onClick={() => handleDeleteComment(comment.id)}
-                  className="text-sm text-red-500 hover:text-red-400 transition-colors"
+                  className="text-sm text-red-500 hover:text-red-400 transition-colors flex items-center gap-1"
                 >
-                  Excluir
+                  <FaTrashAlt /> Excluir
                 </button>
               )}
             </div>
@@ -111,8 +112,8 @@ export default function CommentSection({ musicId }: CommentSectionProps) {
             className="w-full p-3 rounded-lg bg-[var(--color-background)] border border-[var(--color-border)] focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none transition"
             rows={4}
           />
-          <button type="submit" className="btn btn-primary mt-3">
-            Enviar Comentário
+          <button type="submit" className="btn btn-primary mt-3 flex items-center gap-2">
+            <FaPaperPlane /> Enviar Comentário
           </button>
         </form>
       )}

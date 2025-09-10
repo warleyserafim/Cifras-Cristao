@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { FaPlus } from 'react-icons/fa';
 
 interface AddMusicButtonProps {
   artistId: string;
@@ -29,8 +30,8 @@ export default function AddMusicButton({ artistId }: AddMusicButtonProps) {
   return (
     <div className="my-6">
       <Link href={`/artists/${artistId}/music/new`}>
-        <div className="inline-block bg-[var(--color-accent)] hover:bg-[var(--color-accent)]/80 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-          + Adicionar Nova Música
+        <div className="inline-flex items-center bg-[var(--color-accent)] hover:bg-[var(--color-accent)]/80 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+          <FaPlus className="mr-2" /> Adicionar Nova Música
         </div>
       </Link>
     </div>
