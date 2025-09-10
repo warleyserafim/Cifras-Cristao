@@ -36,7 +36,7 @@ export default function MyFavoritesPage() {
 
     const fetchFavorites = async () => {
       try {
-        const response = await getFavoriteMusic(currentUser.id, token);
+        const response = await getFavoriteMusic(currentUser.id);
         setFavoriteMusic(response.data);
       } catch (err) {
         console.error('Failed to fetch favorite music:', err);

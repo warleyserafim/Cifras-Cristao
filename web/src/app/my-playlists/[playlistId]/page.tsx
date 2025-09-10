@@ -31,7 +31,7 @@ const PlaylistPage = () => {
 
   const fetchPlaylist = useCallback(async () => {
     try {
-      const res = await getPlaylistById(playlistId, token!);
+      const res = await getPlaylistById(playlistId);
       setPlaylist(res.data);
       setNewPlaylistName(res.data.name);
     } catch (error) {
@@ -47,7 +47,7 @@ const PlaylistPage = () => {
 
   const handleRemoveMusic = async (musicId: string) => {
     try {
-      await removeMusicFromPlaylist(playlistId, musicId, token!);
+      await removeMusicFromPlaylist(playlistId, musicId);
       fetchPlaylist(); // Refresh the list
     } catch (error) {
       console.error('Failed to remove music from playlist', error);
@@ -57,7 +57,7 @@ const PlaylistPage = () => {
   const handleRenamePlaylist = async () => {
     if (!newPlaylistName.trim()) return;
     try {
-      await updatePlaylist(playlistId, { name: newPlaylistName }, token!);
+      await updatePlaylist(playlistId, { name: newPlaylistName });
       setShowRenameModal(false);
       fetchPlaylist(); // Refresh the playlist name
     } catch (error) {
@@ -68,7 +68,7 @@ const PlaylistPage = () => {
   const handleDeletePlaylist = async () => {
     if (window.confirm('Tem certeza que deseja excluir esta playlist?')) {
       try {
-        await deletePlaylist(playlistId, token!);
+        await deletePlaylist(playlistId);
         // Redirect to the playlists page
         window.location.href = '/my-playlists';
       } catch (error) {

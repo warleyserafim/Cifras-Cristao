@@ -35,7 +35,7 @@ export default function ProfilePage() {
 
     const fetchUser = async () => {
       try {
-        const response = await getUserById(currentUser.id, token);
+        const response = await getUserById(currentUser.id);
         setUser(response.data);
         setNewName(response.data.name || '');
         setNewProfilePhotoUrl(response.data.profilePhotoUrl || '');
@@ -65,7 +65,7 @@ export default function ProfilePage() {
         profilePhotoUrl: newProfilePhotoUrl,
       };
 
-      const response = await updateUser(user.id, updatedData, token);
+      const response = await updateUser(user.id, updatedData);
       setUser(response.data); // Update local state with new data
       localStorage.setItem('user', JSON.stringify(response.data)); // Update localStorage
       setIsEditing(false);

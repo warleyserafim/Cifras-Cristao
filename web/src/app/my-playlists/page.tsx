@@ -18,7 +18,7 @@ const MyPlaylistsPage = () => {
 
   const fetchPlaylists = useCallback(async () => {
     try {
-      const res = await getUserPlaylists(token!);
+      const res = await getUserPlaylists();
       setPlaylists(res.data);
     } catch (error) {
       console.error('Failed to fetch playlists', error);
@@ -34,7 +34,7 @@ const MyPlaylistsPage = () => {
   const handleCreatePlaylist = async () => {
     if (!newPlaylistName.trim()) return;
     try {
-      await createPlaylist({ name: newPlaylistName }, token!);
+      await createPlaylist({ name: newPlaylistName });
       setNewPlaylistName('');
       setShowModal(false);
       fetchPlaylists(); // Refresh the list

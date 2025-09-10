@@ -33,7 +33,7 @@ export default function ManageCategoriesPage() {
       try {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('Authentication required');
-        await deleteCategory(id, token);
+        await deleteCategory(id);
         setCategories(categories.filter(c => c.id !== id));
       } catch (_err) {
         alert('Falha ao apagar categoria.');

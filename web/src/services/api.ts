@@ -84,13 +84,13 @@ export const createComment = (data: { content: string; musicId: string }) => api
 export const deleteComment = (commentId: string) => api.delete(`/comments/${commentId}`);
 
 // Playlist Endpoints
-export const getUserPlaylists = (token: string) => api.get('/playlists', getAuthHeaders(token));
-export const createPlaylist = (data: { name: string }, token: string) => api.post('/playlists', data, getAuthHeaders(token));
-export const getPlaylistById = (id: string, token: string) => api.get(`/playlists/${id}`, getAuthHeaders(token));
-export const updatePlaylist = (id: string, data: { name: string }, token: string) => api.put(`/playlists/${id}`, data, getAuthHeaders(token));
-export const deletePlaylist = (id: string, token: string) => api.delete(`/playlists/${id}`, getAuthHeaders(token));
-export const addMusicToPlaylist = (playlistId: string, musicId: string, token: string) => api.post(`/playlists/${playlistId}/musics/${musicId}`, {}, getAuthHeaders(token));
-export const removeMusicFromPlaylist = (playlistId: string, musicId: string, token: string) => api.delete(`/playlists/${playlistId}/musics/${musicId}`, getAuthHeaders(token));
+export const getUserPlaylists = () => api.get('/playlists');
+export const createPlaylist = (data: { name: string }) => api.post('/playlists', data);
+export const getPlaylistById = (id: string) => api.get(`/playlists/${id}`);
+export const updatePlaylist = (id: string, data: { name: string }) => api.put(`/playlists/${id}`, data);
+export const deletePlaylist = (id: string) => api.delete(`/playlists/${id}`);
+export const addMusicToPlaylist = (playlistId: string, musicId: string) => api.post(`/playlists/${playlistId}/musics/${musicId}`, {});
+export const removeMusicFromPlaylist = (playlistId: string, musicId: string) => api.delete(`/playlists/${playlistId}/musics/${musicId}`);
 
 // Auth Endpoints
 export const login = (credentials: Record<string, unknown>) => api.post('/auth/login', credentials);

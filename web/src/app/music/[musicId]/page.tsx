@@ -139,6 +139,8 @@ export default function MusicPage() {
   const [semitoneChange, setSemitoneChange] = useState(0);
   const [fontSize, setFontSize] = useState(16);
   const { isLoggedIn, user } = useAuth();
+  const currentUserId = user?.id;
+  const isAdmin = user?.role === 'ADMIN';
   const [isFavorited, setIsFavorited] = useState(false);
   const [showAddToPlaylistModal, setShowAddToPlaylistModal] = useState(false);
 
@@ -151,9 +153,8 @@ export default function MusicPage() {
         const response = await getMusicById(musicId);
         setMusic(response.data);
 
-        if (user) {
-          const token = localStorage.getItem('token');
-          const favoritesResponse = await getFavoriteMusic(user.id, token!);
+        if (user && currentUserId) { // Add currentUserId check here
+          const favoritesResponse = await getFavoriteMusic(currentUserId);
           const favorites: MusicData[] = favoritesResponse.data;
           setIsFavorited(Array.isArray(favorites) && favorites.some((favMusic: MusicData) => favMusic.id === musicId));
         }
@@ -165,7 +166,7 @@ export default function MusicPage() {
       }
     };
     fetchMusic();
-  }, [musicId, user]);
+  }, [musicId, user, currentUserId]);
 
   if (loading) {
     return <div className="text-center text-xl mt-8">Carregando...</div>;
@@ -183,7 +184,7 @@ export default function MusicPage() {
       try {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('Authentication required');
-        await deleteMusic(music.id, token);
+        await deleteMusic(music.id);
         router.push(`/artists/${music.artist.id}`);
       } catch (err) {
         console.error('Falha ao apagar música:', err);
@@ -200,13 +201,13 @@ export default function MusicPage() {
     }
 
     const token = localStorage.getItem('token');
-    if (!token || !user) return;
+    if (!token || !user || !currentUserId) return; // Add currentUserId check here
 
     try {
       if (isFavorited) {
-        await removeFavoriteMusic(user.id, music.id, token);
+        await removeFavoriteMusic(currentUserId, music.id);
       } else {
-        await addFavoriteMusic(user.id, music.id, token);
+        await addFavoriteMusic(currentUserId, music.id);
       }
       setIsFavorited(prev => !prev);
     } catch (err) {
@@ -269,11 +270,7 @@ export default function MusicPage() {
                     {/* Botão Favoritar */}
                     <button
                       onClick={handleToggleFavorite}
-                      className={`p-2 rounded-full transition-colors ${
-                        isFavorited
-                          ? 'text-red-500 bg-red-500/10'
-                          : 'text-gray-400 hover:bg-gray-500/20'
-                      }`}
+                      className={`p-2 rounded-full transition-colors ${isFavorited ? 'text-red-500 bg-red-500/10' : 'text-gray-400 hover:bg-gray-500/20'}`}
                       aria-label="Adicionar aos favoritos"
                     >
                       <svg
@@ -362,8 +359,8 @@ export default function MusicPage() {
           </main>
 
           {/* Comments Section */}
-          <section className="mt-8">
-            <CommentSection musicId={music.id} />
+                              <section className="mt-8">
+            <CommentSection musicId={music.id} currentUserId={currentUserId} isAdmin={isAdmin} />
           </section>
         </div>
 

@@ -21,7 +21,7 @@ export default function NewTagPage() {
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('Authentication required');
-      await createTag({ name }, token);
+      await createTag({ name });
       router.push('/tags');
     } catch (_err) {
       setError('Falha ao criar tag.');

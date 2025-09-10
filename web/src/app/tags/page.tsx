@@ -43,7 +43,7 @@ export default function TagsPage() {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('Authentication required');
 
-        await deleteTag(id, token);
+        await deleteTag(id);
         fetchTagsData(); // Refresh the list
       } catch (err) {
         console.error('Falha ao apagar tag:', err);
