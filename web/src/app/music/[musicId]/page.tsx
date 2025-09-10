@@ -163,7 +163,7 @@ export default function MusicPage() {
         setMusic(response.data);
 
         if (currentUserId && token) {
-          const favoritesResponse = await getFavoriteMusic(currentUserId, token);
+          const favoritesResponse = await getFavoriteMusic(currentUserId);
           const favorites: MusicData[] = favoritesResponse.data;
           setIsFavorited(Array.isArray(favorites) && favorites.some((favMusic: MusicData) => favMusic.id === musicId));
         }
@@ -193,7 +193,7 @@ export default function MusicPage() {
       try {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('Authentication required');
-        await deleteMusic(music.id, token);
+        await deleteMusic(music.id);
         router.push(`/artists/${music.artist.id}`);
       } catch (err) {
         console.error('Falha ao apagar música:', err);
@@ -217,9 +217,9 @@ export default function MusicPage() {
 
     try {
       if (isFavorited) {
-        await removeFavoriteMusic(currentUserId, music.id, token);
+        await removeFavoriteMusic(currentUserId, music.id);
       } else {
-        await addFavoriteMusic(currentUserId, music.id, token);
+        await addFavoriteMusic(currentUserId, music.id);
       }
       setIsFavorited(prev => !prev);
     } catch (err) {

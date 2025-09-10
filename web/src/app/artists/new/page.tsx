@@ -48,7 +48,7 @@ export default function NewArtistPage() {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('Authentication required');
 
-      const response = await createArtist({ name, photoUrl, categoryId: selectedCategoryId }, token);
+      const response = await createArtist({ name, photoUrl, categoryId: selectedCategoryId });
       router.push(`/artists/${response.data.id}`);
     } catch (err) {
       setError('Falha ao criar artista. Tente novamente.');

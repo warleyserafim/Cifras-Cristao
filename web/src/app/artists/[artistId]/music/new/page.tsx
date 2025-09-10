@@ -65,7 +65,7 @@ export default function NewMusicPage() {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('Authentication required');
 
-      const response = await createMusic(musicData, token);
+      const response = await createMusic(musicData);
       router.push(`/music/${response.data.id}`);
     } catch (err) {
       setError('Falha ao criar música. Verifique os dados.');

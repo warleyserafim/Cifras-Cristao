@@ -56,7 +56,7 @@ export default function CommentSection({ musicId }: CommentSectionProps) {
     if (!newComment.trim() || !token) return;
 
     try {
-      const response = await createComment({ musicId, content: newComment }, token);
+      const response = await createComment({ musicId, content: newComment });
       // Assuming the response.data contains the full comment object with user info
       const newCommentData = { ...response.data, user: { id: user!.id, name: user!.name } };
       setComments([...comments, newCommentData]);
@@ -70,7 +70,7 @@ export default function CommentSection({ musicId }: CommentSectionProps) {
     if (!token) return;
     if (window.confirm('Tem certeza que deseja excluir este comentário?')) {
         try {
-        await deleteComment(commentId, token);
+        await deleteComment(commentId);
         setComments(comments.filter((comment) => comment.id !== commentId));
         } catch (error) {
         console.error('Error deleting comment:', error);

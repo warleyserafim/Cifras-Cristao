@@ -21,7 +21,7 @@ export default function NewCategoryPage() {
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('Authentication required');
-      await createCategory({ name }, token);
+      await createCategory({ name });
       router.push('/categories');
     } catch (err) {
       setError('Falha ao criar categoria.');

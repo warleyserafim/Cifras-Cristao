@@ -68,7 +68,7 @@ export default function ArtistPage() {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('Authentication required');
 
-        await deleteArtist(artist.id, token);
+        await deleteArtist(artist.id);
         router.push('/'); // Redirect to home page after deletion
       } catch (err) {
         console.error('Falha ao apagar artista:', err);
