@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { createMusic, getTags } from '@/services/api';
+import ChordEditor from '../../../../chord-editor/page';
 
 interface Tag {
   id: string;
@@ -93,7 +94,7 @@ export default function NewMusicPage() {
         </div>
         <div className="mb-6">
           <label htmlFor="content" className="block text-sm font-bold mb-2">Cifra e Letra</label>
-          <textarea id="content" value={content} onChange={(e) => setContent(e.target.value)} required rows={15} className="w-full p-2 rounded bg-[var(--color-background)] border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] font-mono" placeholder="Use <b></b> para marcar os acordes. Ex: <b>G</b>\nPrimeira linha da música..."></textarea>
+          <ChordEditor inputText={content} setInputText={setContent} />
         </div>
         <div className="mb-6">
           <label className="block text-sm font-bold mb-2">Tags</label>
