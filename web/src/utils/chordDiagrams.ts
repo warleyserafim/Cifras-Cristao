@@ -64,6 +64,21 @@ export const CHORD_DIAGRAMS: { [key: string]: ChordDiagrams } = {
 // Helper to get a diagram for a transposed chord
 // This is a simplification. In a real app, you'd transpose the diagram data itself.
 // For now, we just return the diagram for the exact chord name if it exists.
-export const getChordDiagram = (chordName: string, type: 'guitar' | 'keyboard') => {
-  return CHORD_DIAGRAMS[chordName]?.[type];
+export const getChordDiagram = (
+  chordName: string,
+  type: 'guitar' | 'keyboard',
+  capo: number = 0
+): GuitarDiagram | KeyboardDiagram | undefined => {
+  const diagram = CHORD_DIAGRAMS[chordName]?.[type];
+
+  if (diagram && type === 'guitar' && capo > 0) {
+    const newFrets = (diagram as GuitarDiagram).frets.map(fret => fret !== null ? fret + capo : null);
+    return {
+      ...(diagram as GuitarDiagram),
+      frets: newFrets,
+      capo: capo
+    };
+  }
+
+  return diagram;
 };
