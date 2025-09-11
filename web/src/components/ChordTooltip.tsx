@@ -10,14 +10,13 @@ interface ChordTooltipProps {
   chordName: string;
   position: { x: number; y: number };
   onClose: () => void;
-  initialTone: string;
 }
 
-export default function ChordTooltip({ chordName, position, onClose, initialTone }: ChordTooltipProps) {
+export default function ChordTooltip({ chordName, position, onClose }: ChordTooltipProps) {
   console.log('ChordTooltip rendered with:', { chordName, position });
   const [diagramType, setDiagramType] = useState<'guitar' | 'keyboard'>('guitar');
 
-  const chordData = getChordDiagram(chordName, diagramType, initialTone);
+  const chordData = getChordDiagram(chordName, diagramType);
   console.log('Chord Data:', chordData);
 
   return (

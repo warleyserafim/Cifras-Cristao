@@ -3,22 +3,15 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import ChordTooltip from './ChordTooltip';
 import ChordDisplayFormatted from './ChordDisplayFormatted';
-import { getChordDiagram } from '@/utils/chordDiagrams';
-
-import { transposeChord } from '@/utils/musicUtils';
 
 interface ChordInteractiveDisplayProps {
   content: string;
   fontSize: number;
-  initialTone: string;
-  semitoneChange: number;
 }
 
 const ChordInteractiveDisplay: React.FC<ChordInteractiveDisplayProps> = ({
   content,
   fontSize,
-  initialTone,
-  semitoneChange,
 }) => {
   const [tooltip, setTooltip] = useState<{ chordName: string; position: { x: number; y: number } } | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -69,8 +62,6 @@ const ChordInteractiveDisplay: React.FC<ChordInteractiveDisplayProps> = ({
     };
   }, [handleMouseEnter, handleMouseLeave, handleClick]);
 
-  const transposedTone = transposeChord(initialTone, semitoneChange);
-
   return (
     <div ref={contentRef}>
       <ChordDisplayFormatted content={content} fontSize={fontSize} />
@@ -79,7 +70,6 @@ const ChordInteractiveDisplay: React.FC<ChordInteractiveDisplayProps> = ({
           chordName={tooltip.chordName}
           position={tooltip.position}
           onClose={handleMouseLeave}
-          initialTone={transposedTone}
         />
       )}
     </div>

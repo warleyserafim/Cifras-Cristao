@@ -6,7 +6,6 @@ import { getMusicById, deleteMusic, addFavoriteMusic, removeFavoriteMusic, getFa
 import Image from 'next/image';
 import Link from 'next/link';
 import useAuth from '@/hooks/useAuth';
-import ChordTooltip from '@/components/ChordTooltip';
 import CommentSection from '@/components/CommentSection';
 import AddToPlaylistModal from '@/components/AddToPlaylistModal';
 import ChordInteractiveDisplay from '@/components/ChordInteractiveDisplay';
@@ -287,7 +286,7 @@ export default function MusicPage() {
 
             {/* Chord Display */}
             {music.content ? (
-              <ChordInteractiveDisplay content={transposedContent} fontSize={fontSize} initialTone={music.tone} semitoneChange={semitoneChange} />
+              <ChordInteractiveDisplay content={transposedContent} fontSize={fontSize} />
             ) : (
               <p className="p-4 text-center">Cifra não disponível.</p>
             )}
