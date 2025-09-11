@@ -10,19 +10,22 @@ interface ChordTooltipProps {
   chordName: string;
   position: { x: number; y: number };
   onClose: () => void;
+  initialTone: string;
 }
 
-export default function ChordTooltip({ chordName, position, onClose }: ChordTooltipProps) {
+export default function ChordTooltip({ chordName, position, onClose, initialTone }: ChordTooltipProps) {
+  console.log('ChordTooltip rendered with:', { chordName, position });
   const [diagramType, setDiagramType] = useState<'guitar' | 'keyboard'>('guitar');
 
-  const chordData = getChordDiagram(chordName, diagramType);
+  const chordData = getChordDiagram(chordName, diagramType, initialTone);
+  console.log('Chord Data:', chordData);
 
   return (
     <div 
       className="fixed bg-[var(--color-card-background)] rounded-lg shadow-xl p-2 z-50 border border-[var(--color-border)] w-36"
       style={{
         left: position.x,
-        top: position.y + 20, // Offset from the hovered element
+        top: position.y, // Offset from the hovered element
         transform: 'translateX(-50%)', // Center horizontally
       }}
       onMouseLeave={onClose} // Close when mouse leaves the tooltip
