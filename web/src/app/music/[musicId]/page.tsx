@@ -9,6 +9,7 @@ import useAuth from '@/hooks/useAuth';
 import ChordTooltip from '@/components/ChordTooltip';
 import CommentSection from '@/components/CommentSection';
 import AddToPlaylistModal from '@/components/AddToPlaylistModal';
+import ChordInteractiveDisplay from '@/components/ChordInteractiveDisplay';
 
 // Define types for our data
 interface MusicData {
@@ -25,79 +26,18 @@ interface MusicData {
   tags: { tag: { id: string; name: string; } }[];
 }
 
-// --- Transpose Logic ---
-const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-
-const transposeChord = (chord: string, semitones: number): string => {
-  if (!chord) return '';
-
-  const parts = chord.match(/([A-G][#b]?)(m|maj|min|sus|add|dim|aug)?[0-9]*(?:[A-G][#b]?)?/);
-  if (!parts) return chord;
-
-  const root = parts[1];
-  const suffix = parts[2] || '';
-  const other = chord.substring(root.length + suffix.length);
-
-  let rootIndex = NOTES.indexOf(root);
-  if (rootIndex === -1) {
-    if (root.includes('b')) {
-      const sharpEquivalent = NOTES[NOTES.indexOf(root.replace('b', '')) - 1];
-      rootIndex = NOTES.indexOf(sharpEquivalent);
-    } else {
-      return chord;
-    }
-  }
-
-  let newIndex = (rootIndex + semitones) % NOTES.length;
-  if (newIndex < 0) newIndex += NOTES.length;
-
-  return NOTES[newIndex] + suffix + other;
-};
+import { transposeChord } from '@/utils/musicUtils';
 
 const transposeContent = (content: string, semitones: number): string => {
   if (semitones === 0) return content;
 
-  return content.replace(/<b>(.*?)<\/b>/g, (match, chord) => {
+  return content.replace(/\[([A-G][#b]?(?:m|maj|min|sus|add|dim|aug)?[0-9]*(?:\/[A-G][#b]?)?)\]/g, (match, chord) => {
     const transposedChord = transposeChord(chord, semitones);
-    return `<b>${transposedChord}</b>`;
+    return `[${transposedChord}]`; // Keep the square bracket format
   });
 };
 
-// --- Component to display Chords and Lyrics ---
-const ChordDisplay = ({ content, fontSize, onChordHover, onChordLeave }:
-  { content: string; fontSize: number; onChordHover: (chord: string, rect: DOMRect) => void; onChordLeave: () => void }) => {
 
-  const lines = content.split('\n').map((line, index) => {
-    const processedLine = line.split(/(<b>.*?<\/b>)/g).map((part, partIndex) => {
-      if (part.startsWith('<b>') && part.endsWith('</b>')) {
-        const chordName = part.replace(/<b>|<\/b>/g, '');
-        return (
-          <span
-            key={partIndex}
-            className="font-bold text-[var(--color-primary)] cursor-pointer hover:underline relative"
-            onMouseEnter={(e) => onChordHover(chordName, e.currentTarget.getBoundingClientRect())}
-            onMouseLeave={onChordLeave}
-          >
-            {chordName}
-          </span>
-        );
-      } else {
-        return <span key={partIndex} className="mr-1">{part}</span>;
-      }
-    });
-
-    return <div key={index} className="leading-relaxed flex items-end">{processedLine}</div>;
-  });
-
-  return (
-    <pre
-      className="font-mono whitespace-pre-wrap break-words p-4 bg-transparent rounded-md text-[var(--color-text-primary)] text-left"
-      style={{ fontSize: `${fontSize}px`, maxHeight: 'calc(100vh - 300px)', overflowY: 'auto' }}
-    >
-      {lines}
-    </pre>
-  );
-};
 
 // --- Component for YouTube Embed ---
 const YouTubeEmbed = ({ videoUrl }: { videoUrl: string }) => {
@@ -144,8 +84,7 @@ export default function MusicPage() {
   const [isFavorited, setIsFavorited] = useState(false);
   const [showAddToPlaylistModal, setShowAddToPlaylistModal] = useState(false);
 
-  const [hoveredChord, setHoveredChord] = useState<string | null>(null);
-  const [tooltipPosition, setTooltipPosition] = useState<{ x: number, y: number } | null>(null);
+  
 
   useEffect(() => {
     const fetchMusic = async () => {
@@ -176,7 +115,11 @@ export default function MusicPage() {
     return <div className="text-center text-red-500 text-xl mt-8">{error || 'Música não encontrada.'}</div>;
   }
 
-  const handleTranspose = (change: number) => setSemitoneChange(prev => prev + change);
+  const handleTranspose = (change: number) => {
+    setSemitoneChange(prev => {
+      return prev + change;
+    });
+  };
   const handleFontSizeChange = (change: number) => setFontSize(prev => Math.max(10, prev + change));
 
   const handleDeleteMusic = async () => {
@@ -216,15 +159,7 @@ export default function MusicPage() {
     }
   };
 
-  const handleChordHover = (chord: string, rect: DOMRect) => {
-    setHoveredChord(chord);
-    setTooltipPosition({ x: rect.left + window.scrollX, y: rect.top + window.scrollY });
-  };
-
-  const handleChordLeave = () => {
-    setHoveredChord(null);
-    setTooltipPosition(null);
-  };
+  
 
   const transposedContent = transposeContent(music.content, semitoneChange);
 
@@ -352,7 +287,7 @@ export default function MusicPage() {
 
             {/* Chord Display */}
             {music.content ? (
-              <ChordDisplay content={transposedContent} fontSize={fontSize} onChordHover={handleChordHover} onChordLeave={handleChordLeave} />
+              <ChordInteractiveDisplay content={transposedContent} fontSize={fontSize} initialTone={music.tone} semitoneChange={semitoneChange} />
             ) : (
               <p className="p-4 text-center">Cifra não disponível.</p>
             )}
@@ -377,13 +312,7 @@ export default function MusicPage() {
       </div>
 
       {/* Chord Tooltip */}
-      {hoveredChord && tooltipPosition && (
-        <ChordTooltip 
-          chordName={hoveredChord}
-          position={tooltipPosition}
-          onClose={() => setHoveredChord(null)}
-        />
-      )}
+      
 
       {showAddToPlaylistModal && (
         <AddToPlaylistModal
